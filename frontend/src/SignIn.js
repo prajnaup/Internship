@@ -1,18 +1,19 @@
-// src/SignIn.js
+// frontend/src/SignIn.js
 import { useState } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
-import jwtDecode from 'jwt-decode'; // Change this line to use the default export
-import API from './api'; // Ensure API base URL is correct
+import jwtDecode from 'jwt-decode';
+import API from './api'; 
 
 export default function SignIn({ setUser }) {
-  // State to hold user info during the multi-step process
-  const [pendingUserInfo, setPendingUserInfo] = useState(null); // { email, name?, photo? }
+
+  const [pendingUserInfo, setPendingUserInfo] = useState(null); // Stores { email } if completion needed
   const [formData, setFormData] = useState({ name: '', photo: '', phoneNumber: '' });
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Add loading state
 
-  // Step 1: Google Sign-In Success - Just get the email (and maybe prefill)
-  const handleGoogleSuccess = (credentialResponse) => {
-    setError(''); // Clear previous errors
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setIsLoading(true); // Start loading
     try {
       const decoded = jwtDecode(credentialResponse.credential);
       console.log("Google JWT Decoded:", decoded);
@@ -21,140 +22,144 @@ export default function SignIn({ setUser }) {
       if (!email) {
         console.error("Email not found in Google credential");
         setError("Failed to get email from Google. Please try again.");
+        setIsLoading(false);
         return;
       }
 
-      // Store email and potentially prefill form data
-      setPendingUserInfo({ email });
-      setFormData({
-          name: name || '', // Prefill if available
-          photo: picture || '', // Prefill if available
-          phoneNumber: '' // Phone number always needs input
-      });
+      // Call the new backend endpoint to check user status
+      console.log("Calling /google-login with:", { email, name, picture });
+      const res = await API.post('/auth/google-login', { email, name, picture });
+      console.log("Backend response from /google-login:", res.data);
+
+      if (res.data.needsCompletion === false && res.data.user) {
+        // User exists, log them in directly
+        console.log("User exists, setting user state.");
+        setUser(res.data.user);
+        // No need to set pendingUserInfo or formData
+      } else if (res.data.needsCompletion === true) {
+        // User does not exist or needs profile completion
+        console.log("User needs profile completion.");
+        setPendingUserInfo({ email: res.data.email }); // Store email for form submission
+        setFormData({ // Pre-fill form data with suggestions from backend
+          name: res.data.suggestedName || '',
+          photo: '', // Ensure the photo URL input is empty
+          phoneNumber: '' // Phone number still needs to be entered
+        });
+        // The component will re-render showing the form
+      } else {
+         // Handle unexpected response format
+         console.error("Unexpected response from /google-login", res.data);
+         setError("An unexpected error occurred during login. Please try again.");
+      }
 
     } catch (err) {
-      console.error("Error decoding Google credential:", err);
-      setError("An error occurred during Google Sign-In. Please try again.");
+      console.error("Error during Google Sign-In or backend check:", err.response?.data || err.message || err);
+      setError(err.response?.data?.message || "An error occurred during Google Sign-In. Please try again.");
+      setPendingUserInfo(null); // Clear pending state on error
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
   const handleGoogleError = () => {
     console.log('Google Login Failed');
     setError('Google Sign-In failed. Please try again.');
-    setPendingUserInfo(null); // Reset state on failure
+    setPendingUserInfo(null);
+    setIsLoading(false); // Ensure loading stops on Google error too
   };
 
-  // Step 2: Handle input changes in the manual form
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Step 3: Submit the completed profile form to the backend
+  // This function is now only called when the form is displayed and submitted
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    setError(''); // Clear previous errors
+    setError('');
+    setIsLoading(true); // Start loading for submission
 
     if (!pendingUserInfo?.email || !formData.name || !formData.phoneNumber) {
       setError('Please fill in all required fields (Name, Phone Number).');
+      setIsLoading(false);
       return;
     }
 
     try {
-      // Send email (from Google) + name, photo, phoneNumber (from form)
       const payload = {
-        email: pendingUserInfo.email,
+        email: pendingUserInfo.email, // Get email from the pending state
         name: formData.name,
-        photo: formData.photo, // Send photo URL, even if empty
+        photo: formData.photo, // Include photo URL (can be empty)
         phoneNumber: formData.phoneNumber
       };
-      console.log("Submitting profile data:", payload);
+      console.log("Submitting profile data to /complete-profile:", payload);
 
-      // Call the NEW backend endpoint
+      // Call the endpoint to create/save the profile
       const res = await API.post('/auth/complete-profile', payload);
 
-      console.log("Backend response:", res.data);
-      setUser(res.data.user); // Set the user state in App.js
-      setPendingUserInfo(null); // Clear pending state
+      console.log("Backend response from /complete-profile:", res.data);
+      if (res.data.user) {
+        setUser(res.data.user); // Set the user state upon successful profile creation/update
+        setPendingUserInfo(null); // Clear pending state
+      } else {
+         // Handle case where user data might be missing in response
+         console.error("User data missing in response from /complete-profile");
+         setError("Failed to retrieve user profile after saving. Please try logging in again.");
+      }
+
 
     } catch (err) {
       console.error("Error submitting profile:", err.response?.data || err.message);
       setError(err.response?.data?.message || 'Failed to save profile. Please try again.');
+    } finally {
+      setIsLoading(false); // Stop loading
     }
   };
 
-  // Render logic: Show Google Login OR the profile completion form
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      {!pendingUserInfo ? (
-        // STEP 1: Show Google Login Button
-        <>
-          <h1 className="text-3xl mb-6 font-semibold text-gray-700">Sign In / Register</h1>
-          <p className="mb-4 text-gray-600">Sign in with Google to continue.</p>
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            useOneTap={false} // You might want to disable one-tap if you always show the form
-            scope="profile email"
-          />
-          {error && <p className="mt-4 text-red-500">{error}</p>}
-        </>
+    <div className="container">
+      {isLoading ? (
+        <p className="loading-text">Loading...</p>
+      ) : !pendingUserInfo ? (
+        <div className="card">
+          <h1 className="title">Login</h1>
+          <p className="subtitle">Sign in with Google to continue.</p>
+          <div className="button-container">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap={false}
+            />
+          </div>
+          {error && <p className="error-text">{error}</p>}
+        </div>
       ) : (
-        // STEP 2: Show Profile Completion Form
-        <>
-          <h1 className="text-3xl mb-6 font-semibold text-gray-700">Complete Your Profile</h1>
-          <p className="mb-4 text-gray-600">Please provide the following details.</p>
-          <p className="mb-4 text-sm text-gray-500">Email: {pendingUserInfo.email}</p>
-          <form onSubmit={handleProfileSubmit} className="w-full max-w-sm flex flex-col gap-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name <span className="text-red-500">: </span></label>
-              <input
-                id="name"
-                type="text"
-                name="name"
-                placeholder="Your Full Name"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-                className="w-full border border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              />
+        <div className="card">
+          <h1 className="title">Complete Your Profile</h1>
+          <p className="subtitle">Please provide the following details to finish setting up your account.</p>
+          <p className="email-text">Email: <span>{pendingUserInfo.email}</span></p>
+          <form onSubmit={handleProfileSubmit} className="form">
+            <div className="form-group">
+              <label htmlFor="name">Name <span>*</span></label>
+              <input id="name" type="text" name="name" value={formData.name} onChange={handleInputChange} required />
             </div>
-            <div>
-              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">Phone Number <span className="text-red-500">: </span></label>
-              <input
-                id="phoneNumber"
-                type="tel" // Use 'tel' type for better mobile usability
-                name="phoneNumber"
-                placeholder="e.g., +91 9876543210"
-                value={formData.phoneNumber}
-                onChange={handleInputChange}
-                required
-                className="w-full border border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            <div className="form-group">
+              <label htmlFor="phoneNumber">Phone Number <span>*</span></label>
+              <input id="phoneNumber" type="tel" name="phoneNumber" value={formData.phoneNumber} onChange={handleInputChange} required />
             </div>
-            <div>
-              <label htmlFor="photo" className="block text-sm font-medium text-gray-700 mb-1">Photo URL: </label>
-              <input
-                id="photo"
-                type="url" // Use 'url' type for basic validation
-                name="photo"
-                placeholder="https://example.com/your-photo.jpg"
-                value={formData.photo}
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 p-2 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-              />
+            <div className="form-group">
+              <label htmlFor="photo">Photo URL</label>
+              <input id="photo" type="url" name="photo" value={formData.photo} onChange={handleInputChange} />
+              {formData.photo && <img src={formData.photo} alt="Profile" className="avatar-preview" />}
             </div>
-
-            {error && <p className="mt-1 text-red-500 text-sm">{error}</p>}
-
-            <button
-              type="submit"
-              className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-            >
-              Save Profile & Continue
+            {error && <p className="error-text">{error}</p>}
+            <button type="submit" disabled={isLoading} className="submit-button">
+              {isLoading ? 'Saving...' : 'Save Profile & Continue'}
             </button>
           </form>
-        </>
+        </div>
       )}
     </div>
   );

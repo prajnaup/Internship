@@ -1,27 +1,20 @@
 // backend/server.js
 const express = require('express');
 const mongoose = require('mongoose');
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/auth'); // Ensure this path is correct and exports a valid router
 const cors = require('cors');
 require('dotenv').config();
-console.log('Attempting to connect with MONGO_URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded!'); // Check if loaded
-
+console.log('Attempting to connect with MONGO_URI:', process.env.MONGO_URI ? 'Loaded' : 'Not Loaded!'); 
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // Ensure this is before your routes
+app.use(express.json()); 
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  authSource: 'admin', // Keep if needed for Atlas auth user
-  // useNewUrlParser: true,  // Deprecated - Remove
-  // useUnifiedTopology: true // Deprecated - Remove
-})
-  .then(() => console.log('MongoDB Connected Successfully')) // More positive confirmation
-  .catch(err => console.error('MongoDB Connection Error:', err)); // More specific error log
 
-// Routes
-app.use('/api/auth', authRoutes);
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected Successfully')) 
+  .catch(err => console.error('MongoDB Connection Error:', err)); 
+app.use('/api/auth', authRoutes); // Ensure authRoutes is a valid middleware function
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
