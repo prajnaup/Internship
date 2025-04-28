@@ -1,36 +1,73 @@
 // frontend/src/App.js
-import { useState, lazy } from 'react'; // Import lazy
-import { Routes, Route, Navigate } from 'react-router-dom'; // Import routing components
+import { useState, lazy, useEffect } from 'react'; // Import useEffect
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { GoogleOAuthProvider, googleLogout } from '@react-oauth/google';
 
-// Lazy load components for better performance
 const Home = lazy(() => import('./Home'));
 const SignIn = lazy(() => import('./SignIn'));
-const BookDetail = lazy(() => import('./BookDetail')); // Add BookDetail
+const BookDetail = lazy(() => import('./BookDetail'));
 
 const GOOGLE_CLIENT_ID = "922686403960-b35d1kb5da3fj4vbv057unj0srrnch25.apps.googleusercontent.com";
 
-// Helper component for protected routes
-function ProtectedRoute({ user, children }) {
+// Simple Loading Component
+const InitialLoading = () => (
+    <div className="loading-screen">Authenticating...</div>
+);
+
+function ProtectedRoute({ user, isLoading, children }) {
+  if (isLoading) {
+      return <InitialLoading />; // Show loading while checking auth
+  }
   if (!user) {
-    // Redirect to login page if not logged in
     return <Navigate to="/signin" replace />;
   }
-  return children; // Render the component if logged in
+  return children;
 }
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true); // State to track initial auth check
 
-  // Simple logout handler
-  const handleLogout = () => {
-     googleLogout(); // Recommended to clear Google's side too
-     setUser(null); // Clear our app's user state
-     console.log("User logged out.");
-    // Optional: Redirect to sign-in after logout using navigate() from useNavigate if needed elsewhere
+  // --- Load user from localStorage on initial mount ---
+  useEffect(() => {
+    console.log("App mounting, checking localStorage for user...");
+    setIsLoadingAuth(true); // Start loading
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        console.log("User found in localStorage, setting state.");
+        setUser(JSON.parse(storedUser));
+      } else {
+        console.log("No user found in localStorage.");
+      }
+    } catch (error) {
+        console.error("Failed to parse user from localStorage:", error);
+        localStorage.removeItem('user'); // Clear corrupted data
+    } finally {
+        setIsLoadingAuth(false); // Finish loading check
+    }
+  }, []); // Empty array ensures this runs only once on mount
+
+  // --- Update user state and localStorage ---
+  const handleSetUser = (userData) => {
+      if (userData) {
+          console.log("Setting user state and saving to localStorage:", userData);
+          localStorage.setItem('user', JSON.stringify(userData));
+          setUser(userData);
+      } else {
+          // This case shouldn't happen via login flow, but good practice
+          handleLogout(); // Ensure localStorage is cleared if setting user to null
+      }
   };
 
-  // The setUser function passed to SignIn implicitly handles login state update
+
+  // --- Logout handler ---
+  const handleLogout = () => {
+     console.log("Logging out, clearing state and localStorage.");
+     googleLogout();
+     localStorage.removeItem('user'); // Clear persisted user data
+     setUser(null);
+  };
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -38,28 +75,30 @@ export default function App() {
        <Routes>
          <Route
            path="/signin"
-           element={user ? <Navigate to="/" replace /> : <SignIn setUser={setUser} />}
+           element={
+             isLoadingAuth ? <InitialLoading /> : // Show loading screen initially
+             user ? <Navigate to="/" replace /> : // If logged in, redirect from signin
+             <SignIn setUser={handleSetUser} /> // Pass the enhanced setter
+           }
          />
          <Route
            path="/"
            element={
-             <ProtectedRoute user={user}>
+             <ProtectedRoute user={user} isLoading={isLoadingAuth}>
                <Home user={user} onLogout={handleLogout} />
              </ProtectedRoute>
            }
          />
          <Route
-           path="/books/:bookId" // Route for book details
+           path="/books/:bookId"
            element={
-             <ProtectedRoute user={user}>
-               <BookDetail user={user} /> {/* Pass user if needed in BookDetail */}
+             <ProtectedRoute user={user} isLoading={isLoadingAuth}>
+               <BookDetail user={user} />
              </ProtectedRoute>
            }
          />
-         {/* Optional: Add a catch-all route for 404 Not Found */}
-         {/* <Route path="*" element={<NotFound />} /> */}
-         {/* Redirect root to signin if not logged in (alternative to ProtectedRoute logic) */}
-         {/* <Route path="/" element={user ? <Home user={user} onLogout={handleLogout} /> : <Navigate to="/signin" replace />} /> */}
+         {/* Optional: Catch-all route or redirect for unknown paths */}
+         {/* <Route path="*" element={<Navigate to={user ? "/" : "/signin"} replace />} /> */}
        </Routes>
       </div>
     </GoogleOAuthProvider>
