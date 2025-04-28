@@ -155,9 +155,9 @@ export default function SignIn({ setUser }) {
               {formData.photo && <img src={formData.photo} alt="Profile" className="avatar-preview" />}
             </div>
             {error && <p className="error-text">{error}</p>}
-            <button type="submit" disabled={isLoading} className="submit-button">
-              {isLoading ? 'Saving...' : 'Save Profile & Continue'}
-            </button>
+            <button type="submit" disabled={isLoading} className="button submit-button">
+  {isLoading ? 'Saving...' : 'Save Profile & Continue'}
+</button>
           </form>
         </div>
       )}

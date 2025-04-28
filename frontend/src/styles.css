@@ -1,158 +1,273 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  color: #333;
-}
+/* frontend/src/styles.css */
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  padding: 16px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-.subtitle {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 16px;
-}
-
-.email-text {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 16px;
-}
-
-.info-text {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 24px;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-group {
-  text-align: left;
-}
-
-.form-group label {
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 8px;
-  display: block;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.avatar {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  margin: 16px auto;
-}
-
-.avatar-placeholder {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  background: #ccc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 32px;
-  color: #fff;
-  margin: 16px auto;
-}
-
-.avatar-preview {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  margin: 8px auto;
-}
-
- .button-container,
-.logout-button,
-.submit-button {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #2f1be1;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-}
-
-
-.button-container {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #fff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-}
-
-.button-container:hover{
-  background-color: #fff;
-}
-
-
-
-
-
-
-.logout-button {
-  background-color: #dc3545;
-}
-
-.logout-button:hover {
-  background-color: #c82333;
-}
-
-
-.submit-button:hover {
-  background-color: #2f1be1;
-}
-
-.error-text {
-  color: #dc3545;
-  font-size: 14px;
-  margin-top: 8px;
-}
-
-.loading-text {
-  font-size: 18px;
-  color: #666;
-}
+/* --- Variables and Base Styles --- */
+:root {
+    --primary-color: #6a11cb; /* Example: A nice purple */
+    --primary-color-dark: #2575fc; /* Example: A complementing blue for gradients/hover */
+    --secondary-color: #f8f9fa; /* Light grey for backgrounds */
+    --card-bg: #ffffff;
+    --text-color: #343a40; /* Dark grey for text */
+    --text-color-light: #6c757d; /* Lighter grey for subtitles */
+    --border-color: #dee2e6;
+    --error-color: #dc3545;
+    --success-color: #28a745; /* Added for potential success messages */
+    --link-color: var(--primary-color);
+  
+    --font-family: 'Poppins', Arial, sans-serif; /* Use the imported font */
+    --border-radius: 8px;
+    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    --input-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --transition-speed: 0.2s ease-in-out;
+  }
+  
+  body {
+    margin: 0;
+    font-family: var(--font-family);
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  *, *::before, *::after {
+    box-sizing: border-box; /* Better box model */
+  }
+  
+  /* --- Utility Classes --- */
+  .loading-screen,
+  .loading-text {
+    font-size: 1.2rem;
+    color: var(--text-color-light);
+    font-weight: 500;
+    text-align: center;
+    padding: 40px;
+  }
+  
+  .error-text {
+    color: var(--error-color);
+    font-size: 0.9rem;
+    margin-top: 8px;
+    text-align: center; /* Center error in forms too */
+    font-weight: 500;
+  }
+  
+  /* --- Main Container & Card --- */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    padding: 32px; /* Increased padding */
+    max-width: 450px; /* Slightly wider */
+    width: 100%;
+    text-align: center;
+    border: 1px solid var(--border-color); /* Subtle border */
+  }
+  
+  /* --- Typography within Card --- */
+  .title {
+    font-size: 1.8rem; /* Larger title */
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-color);
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+    color: var(--text-color-light);
+    margin-bottom: 24px; /* More space below subtitle */
+  }
+  
+  .email-text {
+    font-size: 0.95rem;
+    color: var(--text-color-light);
+    margin-bottom: 16px;
+    word-break: break-all; /* Prevent long emails from breaking layout */
+  }
+  .email-text span { /* Style the actual email differently if needed */
+      font-weight: 500;
+      color: var(--text-color);
+  }
+  
+  .info-text {
+    font-size: 0.95rem;
+    color: var(--text-color-light);
+    margin-bottom: 24px;
+  }
+  
+  /* --- Form Styles --- */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Increased gap */
+    margin-top: 24px;
+  }
+  
+  .form-group {
+    text-align: left;
+  }
+  
+  .form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .form-group label span { /* Make the required asterisk red */
+      color: var(--error-color);
+      margin-left: 2px;
+  }
+  
+  
+  .form-group input[type="text"],
+  .form-group input[type="tel"],
+  .form-group input[type="url"],
+  .form-group input[type="email"] { /* Add email if you ever use it */
+    width: 100%;
+    padding: 12px 15px; /* More padding */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+    box-shadow: var(--input-shadow);
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2); /* Focus ring using primary color */
+  }
+  
+  /* --- Buttons --- */
+  /* Base Button Style */
+  .button {
+    display: inline-block;
+    padding: 12px 24px; /* Consistent padding */
+    font-size: 1rem;
+    font-weight: 500;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-align: center;
+    transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+    text-decoration: none; /* For potential link buttons */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Primary Button (Submit) */
+  .submit-button {
+    composes: button; /* Inherit base styles */
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+    color: #ffffff;
+  }
+  
+  .submit-button:hover:not(:disabled) {
+    background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color)); /* Slightly shift gradient */
+  }
+  
+  /* Danger Button (Logout) */
+  .logout-button {
+    composes: button; /* Inherit base styles */
+    background-color: var(--error-color);
+    color: #ffffff;
+    margin-top: 16px; /* Space above logout button */
+  }
+  
+  .logout-button:hover:not(:disabled) {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  
+  /* Google Button Container - Adjust spacing around the standard Google button */
+  .button-container {
+    margin-top: 24px; /* Space above Google button */
+    margin-bottom: 16px;
+    display: flex; /* Use flex to easily center the button itself if needed */
+    justify-content: center;
+    /* Resetting previous conflicting styles */
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    cursor: default;
+  }
+  
+  /* Style the Google Button itself (limited options) */
+  .button-container > div { /* Target the div rendered by react-oauth-google */
+      border-radius: var(--border-radius) !important; /* Try to enforce border radius */
+      box-shadow: var(--input-shadow) !important;
+      transition: box-shadow var(--transition-speed);
+  }
+  .button-container > div:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Slightly more shadow on hover */
+  }
+  
+  
+  /* --- Avatar / Placeholders --- */
+  .avatar, .avatar-placeholder {
+    width: 100px; /* Slightly larger */
+    height: 100px;
+    border-radius: 50%;
+    margin: 24px auto; /* More vertical margin */
+    object-fit: cover; /* Ensure image covers the area */
+    border: 3px solid var(--card-bg); /* Border matching card background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around avatar */
+  }
+  
+  .avatar-placeholder {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem; /* Larger initial */
+    font-weight: 600;
+    color: #ffffff;
+  }
+  
+  .avatar-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-top: 12px; /* Space above preview */
+    display: block; /* Ensure it takes block space */
+    margin-left: 0; /* Align left within form group */
+    object-fit: cover;
+    border: 2px solid var(--border-color);
+  }
+  
+  /* --- Home Specific --- */
+  .home-container .card {
+    /* Specific styles for the home card if needed, otherwise defaults are fine */
+  }
+  
+  .home-container .subtitle { /* Name on home page */
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-color);
+      margin-top: -10px; /* Adjust spacing relative to avatar */
+      margin-bottom: 8px;
+  }
