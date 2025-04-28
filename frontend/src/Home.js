@@ -59,8 +59,7 @@ export default function Home({ user, onLogout }) {
           <div className="book-grid">
             {books.map((book) => (
               <div key={book._id} className="book-card">
-                {/* Optional: Wrap image/content in a Link for details page */}
-                {/* <Link to={`/books/${book._id}`}> */}
+          
                   <img
                     src={book.image || 'https://via.placeholder.com/150x220?text=No+Image'} // Use placeholder if image missing
                     alt={`${book.title} cover`}
