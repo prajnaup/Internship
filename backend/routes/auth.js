@@ -1,7 +1,7 @@
 // backend/routes/auth.js
 const express = require('express');
 const router = express.Router();
-const User = require('../models/user'); // Fixed case-sensitive import
+const User = require('../models/User'); // Fixed case-sensitive import
 
 // NEW: Endpoint to handle initial Google Sign-In check
 router.post('/google-login', async (req, res) => {
