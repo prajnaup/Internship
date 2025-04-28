@@ -271,3 +271,197 @@
       margin-top: -10px; /* Adjust spacing relative to avatar */
       margin-bottom: 8px;
   }
+
+
+  /* frontend/src/styles.css */
+
+/* --- Additions for Home Page --- */
+
+.home-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--secondary-color); /* Or a different background for the home page */
+  }
+  
+  /* --- Home Header --- */
+  .home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: var(--card-bg); /* White background */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky; /* Make header sticky */
+    top: 0;
+    z-index: 10; /* Ensure it's above content */
+    width: 100%;
+  }
+  
+  .welcome-user {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+  }
+  
+  .header-avatar, .header-avatar-placeholder {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+  }
+  
+  .header-avatar-placeholder {
+      background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #ffffff;
+  }
+  
+  .header-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0; /* Reset default margin */
+  }
+  
+  .header-logout {
+    margin-top: 0; /* Override default margin from .logout-button */
+    padding: 8px 18px; /* Slightly smaller padding for header button */
+    font-size: 0.9rem;
+  }
+  
+  
+  /* --- Main Book Display Area --- */
+  .book-display-area {
+    padding: 30px;
+    flex-grow: 1; /* Takes remaining vertical space */
+    width: 100%;
+    max-width: 1200px; /* Limit max width for better readability on large screens */
+    margin: 0 auto; /* Center the content area */
+  }
+  
+  .section-title {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 25px;
+    text-align: left; /* Align title to the left */
+    border-bottom: 2px solid var(--primary-color); /* Add an underline */
+    padding-bottom: 8px;
+  }
+  
+  /* --- Book Grid --- */
+  .book-grid {
+    display: grid;
+    /* Responsive grid: Adjust minmax width for desired card size */
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 25px; /* Gap between grid items */
+  }
+  
+  /* --- Book Card --- */
+  .book-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden; /* Ensure image corners are rounded if image overflows */
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    display: flex;
+    flex-direction: column;
+    text-align: left; /* Align text left within the card */
+  }
+  
+  .book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  }
+  
+  .book-cover {
+    width: 100%;
+    /* Maintain aspect ratio - adjust as needed, e.g., 2 / 3 */
+    aspect-ratio: 2 / 3;
+    object-fit: cover; /* Cover the area, may crop */
+    /* object-fit: contain; */ /* Fit entire image, may leave gaps */
+    background-color: #eee; /* Placeholder color while image loads */
+    border-bottom: 1px solid var(--border-color); /* Separator */
+  }
+  
+  .book-info {
+    padding: 12px 15px;
+    flex-grow: 1; /* Allows info to take remaining space if needed */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes author down if card height varies */
+  }
+  
+  .book-title {
+    font-size: 1rem; /* Adjust as needed */
+    font-weight: 600;
+    color: var(--text-color);
+    margin: 0 0 5px 0; /* Bottom margin */
+    /* Limit title lines and add ellipsis */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show max 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 2.4em; /* Approximate height for 2 lines */
+  }
+  
+  .book-author {
+    font-size: 0.85rem;
+    color: var(--text-color-light);
+    margin: 0;
+     /* Limit author lines */
+     white-space: nowrap;
+     overflow: hidden;
+     text-overflow: ellipsis;
+  }
+  
+  
+  /* Optional: Link styling if using React Router Link */
+  .book-card a {
+      text-decoration: none;
+      color: inherit; /* Inherit color from parent */
+      display: flex;
+      flex-direction: column;
+      height: 100%; /* Make link fill the card */
+  }
+  
+  /* --- Loading and Error Text (Leverage existing) --- */
+  .home-page-container .loading-text {
+    /* Use existing .loading-text styles */
+     margin-top: 40px;
+     font-size: 1.1rem;
+  }
+  
+  .home-page-container .error-text {
+    /* Use existing .error-text styles */
+    margin-top: 40px;
+    text-align: center;
+    padding: 15px;
+    background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+    border: 1px solid var(--error-color);
+    border-radius: var(--border-radius);
+  }
+  
+  .home-page-container .info-text {
+     /* Use existing .info-text or add specific styles */
+     margin-top: 40px;
+     text-align: center;
+     color: var(--text-color-light);
+  }
+  
+  /* --- Optional Footer --- */
+  .home-footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px; /* Space above footer */
+      color: var(--text-color-light);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border-color);
+  }
