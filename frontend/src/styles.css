@@ -2,466 +2,826 @@
 
 /* --- Variables and Base Styles --- */
 :root {
-    --primary-color: #6a11cb; /* Example: A nice purple */
-    --primary-color-dark: #2575fc; /* Example: A complementing blue for gradients/hover */
-    --secondary-color: #f8f9fa; /* Light grey for backgrounds */
-    --card-bg: #ffffff;
-    --text-color: #343a40; /* Dark grey for text */
-    --text-color-light: #6c757d; /* Lighter grey for subtitles */
-    --border-color: #dee2e6;
-    --error-color: #dc3545;
-    --success-color: #28a745; /* Added for potential success messages */
-    --link-color: var(--primary-color);
-  
-    --font-family: 'Poppins', Arial, sans-serif; /* Use the imported font */
-    --border-radius: 8px;
-    --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    --input-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    --transition-speed: 0.2s ease-in-out;
-  }
-  
-  body {
-    margin: 0;
-    font-family: var(--font-family);
-    background-color: var(--secondary-color);
-    color: var(--text-color);
-    line-height: 1.6;
-  }
-  
-  *, *::before, *::after {
-    box-sizing: border-box; /* Better box model */
-  }
-  
-  /* --- Utility Classes --- */
-  .loading-screen,
-  .loading-text {
-    font-size: 1.2rem;
-    color: var(--text-color-light);
+  --primary-color: #6a11cb; /* Example: A nice purple */
+  --primary-color-dark: #2575fc; /* Example: A complementing blue for gradients/hover */
+  --secondary-color: #f8f9fa; /* Light grey for backgrounds */
+  --card-bg: #ffffff;
+  --text-color: #343a40; /* Dark grey for text */
+  --text-color-light: #6c757d; /* Lighter grey for subtitles */
+  --border-color: #dee2e6;
+  --error-color: #dc3545;
+  --success-color: #28a745; /* Added for potential success messages */
+  --link-color: var(--primary-color);
+
+  --font-family: 'Poppins', Arial, sans-serif; /* Use the imported font */
+  --border-radius: 8px;
+  --card-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  --input-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --transition-speed: 0.2s ease-in-out;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box; /* Better box model */
+}
+
+/* --- Utility Classes --- */
+.loading-screen,
+.loading-text {
+  font-size: 1.2rem;
+  color: var(--text-color-light);
+  font-weight: 500;
+  text-align: center;
+  padding: 40px;
+}
+
+.error-text {
+  color: var(--error-color);
+  font-size: 0.9rem;
+  margin-top: 8px;
+  text-align: center; /* Center error in forms too */
+  font-weight: 500;
+}
+
+/* --- Main Container & Card --- */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 32px; /* Increased padding */
+  max-width: 450px; /* Slightly wider */
+  width: 100%;
+  text-align: center;
+  border: 1px solid var(--border-color); /* Subtle border */
+}
+
+/* --- Typography within Card --- */
+.title {
+  font-size: 1.8rem; /* Larger title */
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-color);
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--text-color-light);
+  margin-bottom: 24px; /* More space below subtitle */
+}
+
+.email-text {
+  font-size: 0.95rem;
+  color: var(--text-color-light);
+  margin-bottom: 16px;
+  word-break: break-all; /* Prevent long emails from breaking layout */
+}
+.email-text span { /* Style the actual email differently if needed */
     font-weight: 500;
-    text-align: center;
-    padding: 40px;
-  }
-  
-  .error-text {
+    color: var(--text-color);
+}
+
+.info-text {
+  font-size: 0.95rem;
+  color: var(--text-color-light);
+  margin-bottom: 24px;
+}
+
+/* --- Form Styles --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Increased gap */
+  margin-top: 24px;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 8px;
+  display: block;
+}
+.form-group label span { /* Make the required asterisk red */
     color: var(--error-color);
-    font-size: 0.9rem;
-    margin-top: 8px;
-    text-align: center; /* Center error in forms too */
-    font-weight: 500;
-  }
-  
-  /* --- Main Container & Card --- */
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
-  
-  .card {
-    background: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    padding: 32px; /* Increased padding */
-    max-width: 450px; /* Slightly wider */
-    width: 100%;
-    text-align: center;
-    border: 1px solid var(--border-color); /* Subtle border */
-  }
-  
-  /* --- Typography within Card --- */
-  .title {
-    font-size: 1.8rem; /* Larger title */
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text-color);
-  }
-  
-  .subtitle {
-    font-size: 1rem;
-    color: var(--text-color-light);
-    margin-bottom: 24px; /* More space below subtitle */
-  }
-  
-  .email-text {
-    font-size: 0.95rem;
-    color: var(--text-color-light);
-    margin-bottom: 16px;
-    word-break: break-all; /* Prevent long emails from breaking layout */
-  }
-  .email-text span { /* Style the actual email differently if needed */
-      font-weight: 500;
-      color: var(--text-color);
-  }
-  
-  .info-text {
-    font-size: 0.95rem;
-    color: var(--text-color-light);
-    margin-bottom: 24px;
-  }
-  
-  /* --- Form Styles --- */
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Increased gap */
-    margin-top: 24px;
-  }
-  
-  .form-group {
-    text-align: left;
-  }
-  
-  .form-group label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 8px;
-    display: block;
-  }
-  .form-group label span { /* Make the required asterisk red */
-      color: var(--error-color);
-      margin-left: 2px;
-  }
-  
-  
-  .form-group input[type="text"],
-  .form-group input[type="tel"],
-  .form-group input[type="url"],
-  .form-group input[type="email"] { /* Add email if you ever use it */
-    width: 100%;
-    padding: 12px 15px; /* More padding */
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    color: var(--text-color);
-    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
-    box-shadow: var(--input-shadow);
-  }
-  
-  .form-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2); /* Focus ring using primary color */
-  }
-  
-  /* --- Buttons --- */
-  /* Base Button Style */
-  .button {
-    display: inline-block;
-    padding: 12px 24px; /* Consistent padding */
-    font-size: 1rem;
-    font-weight: 500;
-    border: none;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    text-align: center;
-    transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
-    text-decoration: none; /* For potential link buttons */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .button:hover {
-    transform: translateY(-2px); /* Slight lift on hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Primary Button (Submit) */
-  .submit-button {
-    composes: button; /* Inherit base styles */
-    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
-    color: #ffffff;
-  }
-  
-  .submit-button:hover:not(:disabled) {
-    background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color)); /* Slightly shift gradient */
-  }
-  
-  /* Danger Button (Logout) */
-  .logout-button {
-    composes: button; /* Inherit base styles */
-    background-color: var(--error-color);
-    color: #ffffff;
-    margin-top: 16px; /* Space above logout button */
-  }
-  
-  .logout-button:hover:not(:disabled) {
-    background-color: #c82333; /* Darker red on hover */
-  }
-  
-  /* Google Button Container - Adjust spacing around the standard Google button */
-  .button-container {
-    margin-top: 24px; /* Space above Google button */
-    margin-bottom: 16px;
-    display: flex; /* Use flex to easily center the button itself if needed */
-    justify-content: center;
-    /* Resetting previous conflicting styles */
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    cursor: default;
-  }
-  
-  /* Style the Google Button itself (limited options) */
-  .button-container > div { /* Target the div rendered by react-oauth-google */
-      border-radius: var(--border-radius) !important; /* Try to enforce border radius */
-      box-shadow: var(--input-shadow) !important;
-      transition: box-shadow var(--transition-speed);
-  }
-  .button-container > div:hover {
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Slightly more shadow on hover */
-  }
-  
-  
-  /* --- Avatar / Placeholders --- */
-  .avatar, .avatar-placeholder {
-    width: 100px; /* Slightly larger */
-    height: 100px;
-    border-radius: 50%;
-    margin: 24px auto; /* More vertical margin */
-    object-fit: cover; /* Ensure image covers the area */
-    border: 3px solid var(--card-bg); /* Border matching card background */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around avatar */
-  }
-  
-  .avatar-placeholder {
-    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem; /* Larger initial */
-    font-weight: 600;
-    color: #ffffff;
-  }
-  
-  .avatar-preview {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-top: 12px; /* Space above preview */
-    display: block; /* Ensure it takes block space */
-    margin-left: 0; /* Align left within form group */
-    object-fit: cover;
-    border: 2px solid var(--border-color);
-  }
-  
-  /* --- Home Specific --- */
-  .home-container .card {
-    /* Specific styles for the home card if needed, otherwise defaults are fine */
-  }
-  
-  .home-container .subtitle { /* Name on home page */
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--text-color);
-      margin-top: -10px; /* Adjust spacing relative to avatar */
-      margin-bottom: 8px;
-  }
+    margin-left: 2px;
+}
 
 
-  /* frontend/src/styles.css */
+.form-group input[type="text"],
+.form-group input[type="tel"],
+.form-group input[type="url"],
+.form-group input[type="email"] { /* Add email if you ever use it */
+  width: 100%;
+  padding: 12px 15px; /* More padding */
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  color: var(--text-color);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  box-shadow: var(--input-shadow);
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.2); /* Focus ring using primary color */
+}
+
+/* --- Buttons --- */
+/* Base Button Style */
+.button {
+  display: inline-block;
+  padding: 12px 24px; /* Consistent padding */
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
+  text-decoration: none; /* For potential link buttons */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Added from later version - safe global change */
+  background: #ccc !important; /* Use important to override specific button styles if needed */
+  color: #777 !important;
+  border-color: #ccc !important;
+}
+
+/* Primary Button (Submit) */
+.submit-button {
+  composes: button; /* Inherit base styles */
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+  color: #ffffff;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color)); /* Slightly shift gradient */
+}
+
+/* Danger Button (Logout) */
+.logout-button {
+  composes: button; /* Inherit base styles */
+  background-color: var(--error-color);
+  color: #ffffff;
+  margin-top: 16px; /* Space above logout button */
+}
+
+.logout-button:hover:not(:disabled) {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+/* Google Button Container - Adjust spacing around the standard Google button */
+.button-container {
+  margin-top: 24px; /* Space above Google button */
+  margin-bottom: 16px;
+  display: flex; /* Use flex to easily center the button itself if needed */
+  justify-content: center;
+  /* Resetting previous conflicting styles */
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: default;
+}
+
+/* Style the Google Button itself (limited options) */
+.button-container > div { /* Target the div rendered by react-oauth-google */
+    border-radius: var(--border-radius) !important; /* Try to enforce border radius */
+    box-shadow: var(--input-shadow) !important;
+    transition: box-shadow var(--transition-speed);
+}
+.button-container > div:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Slightly more shadow on hover */
+}
+
+
+/* --- Avatar / Placeholders --- */
+.avatar, .avatar-placeholder {
+  width: 100px; /* Slightly larger */
+  height: 100px;
+  border-radius: 50%;
+  margin: 24px auto; /* More vertical margin */
+  object-fit: cover; /* Ensure image covers the area */
+  border: 3px solid var(--card-bg); /* Border matching card background */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around avatar */
+}
+
+.avatar-placeholder {
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem; /* Larger initial */
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.avatar-preview {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-top: 12px; /* Space above preview */
+  display: block; /* Ensure it takes block space */
+  margin-left: 0; /* Align left within form group */
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+
+/* --- Home Specific --- */
+/* NOTE: The styles below were PREVIOUSLY under this comment,
+   they are correctly scoped and should remain */
 
 /* --- Additions for Home Page --- */
 
 .home-page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--secondary-color); /* Or a different background for the home page */
+}
+
+/* --- Home Header --- */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: var(--card-bg); /* White background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky; /* Make header sticky */
+  top: 0;
+  z-index: 10; /* Ensure it's above content */
+  width: 100%;
+}
+
+.welcome-user {
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: var(--secondary-color); /* Or a different background for the home page */
-  }
-  
-  /* --- Home Header --- */
-  .home-header {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
-    background: var(--card-bg); /* White background */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid var(--border-color);
-    position: sticky; /* Make header sticky */
-    top: 0;
-    z-index: 10; /* Ensure it's above content */
-    width: 100%;
-  }
-  
-  .welcome-user {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-  }
-  
-  .header-avatar, .header-avatar-placeholder {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-  }
-  
-  .header-avatar-placeholder {
-      background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: #ffffff;
-  }
-  
-  .header-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin: 0; /* Reset default margin */
-  }
-  
-  .header-logout {
-    margin-top: 0; /* Override default margin from .logout-button */
-    padding: 8px 18px; /* Slightly smaller padding for header button */
-    font-size: 0.9rem;
-  }
-  
-  
-  /* --- Main Book Display Area --- */
-  .book-display-area {
-    padding: 30px;
-    flex-grow: 1; /* Takes remaining vertical space */
-    width: 100%;
-    max-width: 1200px; /* Limit max width for better readability on large screens */
-    margin: 0 auto; /* Center the content area */
-  }
-  
-  .section-title {
-    font-size: 1.7rem;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 25px;
-    text-align: left; /* Align title to the left */
-    border-bottom: 2px solid var(--primary-color); /* Add an underline */
-    padding-bottom: 8px;
-  }
-  
-  /* --- Book Grid --- */
-  .book-grid {
-    display: grid;
-    /* Responsive grid: Adjust minmax width for desired card size */
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 25px; /* Gap between grid items */
-  }
-  
-  /* --- Book Card --- */
-  .book-card {
-    background-color: var(--card-bg);
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    overflow: hidden; /* Ensure image corners are rounded if image overflows */
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    gap: 15px;
+}
+
+.header-avatar, .header-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.header-avatar-placeholder {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
     display: flex;
-    flex-direction: column;
-    text-align: left; /* Align text left within the card */
-  }
-  
-  .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
-  }
-  
-  .book-cover {
-    width: 100%;
-    /* Maintain aspect ratio - adjust as needed, e.g., 2 / 3 */
-    aspect-ratio: 2 / 3;
-    object-fit: cover; /* Cover the area, may crop */
-    /* object-fit: contain; */ /* Fit entire image, may leave gaps */
-    background-color: #eee; /* Placeholder color while image loads */
-    border-bottom: 1px solid var(--border-color); /* Separator */
-  }
-  
-  .book-info {
-    padding: 12px 15px;
-    flex-grow: 1; /* Allows info to take remaining space if needed */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Pushes author down if card height varies */
-  }
-  
-  .book-title {
-    font-size: 1rem; /* Adjust as needed */
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
     font-weight: 600;
-    color: var(--text-color);
-    margin: 0 0 5px 0; /* Bottom margin */
-    /* Limit title lines and add ellipsis */
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Show max 2 lines */
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-height: 2.4em; /* Approximate height for 2 lines */
-  }
-  
-  .book-author {
-    font-size: 0.85rem;
-    color: var(--text-color-light);
-    margin: 0;
-     /* Limit author lines */
-     white-space: nowrap;
-     overflow: hidden;
-     text-overflow: ellipsis;
-  }
-  
-  
-  /* Optional: Link styling if using React Router Link */
-  .book-card a {
-      text-decoration: none;
-      color: inherit; /* Inherit color from parent */
-      display: flex;
-      flex-direction: column;
-      height: 100%; /* Make link fill the card */
-  }
-  
-  /* --- Loading and Error Text (Leverage existing) --- */
-  .home-page-container .loading-text {
-    /* Use existing .loading-text styles */
-     margin-top: 40px;
-     font-size: 1.1rem;
-  }
-  
-  .home-page-container .error-text {
-    /* Use existing .error-text styles */
-    margin-top: 40px;
+    color: #ffffff;
+}
+
+.header-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0; /* Reset default margin */
+}
+
+.header-logout {
+  margin-top: 0; /* Override default margin from .logout-button */
+  padding: 8px 18px; /* Slightly smaller padding for header button */
+  font-size: 0.9rem;
+  /* Ensure it composes button styles correctly (already does via .logout-button) */
+}
+
+
+/* --- Main Book Display Area --- */
+.book-display-area {
+  padding: 30px;
+  flex-grow: 1; /* Takes remaining vertical space */
+  width: 100%;
+  max-width: 1200px; /* Limit max width for better readability on large screens */
+  margin: 0 auto; /* Center the content area */
+}
+
+.section-title {
+  font-size: 1.7rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 25px;
+  text-align: left; /* Align title to the left */
+  border-bottom: 2px solid var(--primary-color); /* Add an underline */
+  padding-bottom: 8px;
+}
+
+/* --- Book Grid --- */
+.book-grid {
+  display: grid;
+  /* Responsive grid: Adjust minmax width for desired card size */
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 25px; /* Gap between grid items */
+}
+
+/* --- Book Card --- */
+.book-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden; /* Ensure image corners are rounded if image overflows */
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* Align text left within the card */
+  height: 100%; /* Ensure cards in a row can align height */
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.book-cover {
+  width: 100%;
+  /* Maintain aspect ratio - adjust as needed, e.g., 2 / 3 */
+  aspect-ratio: 2 / 3;
+  object-fit: cover; /* Cover the area, may crop */
+  /* object-fit: contain; */ /* Fit entire image, may leave gaps */
+  background-color: #eee; /* Placeholder color while image loads */
+  border-bottom: 1px solid var(--border-color); /* Separator */
+}
+
+.book-info {
+  padding: 12px 15px;
+  flex-grow: 1; /* Allows info to take remaining space if needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes author down if card height varies */
+}
+
+.book-title {
+  font-size: 1rem; /* Adjust as needed */
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 5px 0; /* Bottom margin */
+  /* Limit title lines and add ellipsis */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Show max 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 2.4em; /* Approximate height for 2 lines */
+}
+
+.book-author {
+  font-size: 0.85rem;
+  color: var(--text-color-light);
+  margin: 0;
+   /* Limit author lines */
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+
+/* Link wrapper for book card */
+.book-card-link {
+  text-decoration: none; /* Remove underline from link */
+  color: inherit; /* Inherit text color */
+  display: block; /* Make link take up block space */
+  outline: none; /* Remove default outline */
+  height: 100%; /* Make link fill the grid area */
+}
+
+.book-card-link:focus-visible .book-card { /* Style card on focus */
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Enhance shadow on focus */
+}
+
+
+/* --- Loading and Error Text (Leverage existing) --- */
+.home-page-container .loading-text {
+  /* Use existing .loading-text styles */
+   margin-top: 40px;
+   font-size: 1.1rem;
+}
+
+.home-page-container .error-text {
+  /* Use existing .error-text styles */
+  margin-top: 40px;
+  text-align: center;
+  padding: 15px;
+  background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+  border: 1px solid var(--error-color);
+  border-radius: var(--border-radius);
+}
+
+.home-page-container .info-text {
+   /* Use existing .info-text or add specific styles */
+   margin-top: 40px;
+   text-align: center;
+   color: var(--text-color-light);
+}
+
+/* --- Optional Footer --- */
+.home-footer {
     text-align: center;
-    padding: 15px;
-    background-color: rgba(220, 53, 69, 0.1); /* Light red background */
-    border: 1px solid var(--error-color);
-    border-radius: var(--border-radius);
-  }
-  
-  .home-page-container .info-text {
-     /* Use existing .info-text or add specific styles */
-     margin-top: 40px;
+    padding: 20px;
+    margin-top: auto; /* Changed from 40px to auto */
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg); /* Give footer a background */
+    width: 100%; /* Ensure footer spans width */
+}
+
+/* ======================================================== */
+/* --- START: Styles specific to Book Detail Page --- */
+/* ======================================================== */
+
+/* --- New Variables for Book Detail (Additions only) --- */
+:root {
+  --tag-bg: #e7f3ff; /* Light blue background for tags */
+  --tag-text: #0d6efd; /* Blue text for tags */
+  --available-color: var(--success-color);
+  --unavailable-color: var(--error-color);
+  /* Use original --link-color for consistency unless specifically overridden */
+}
+
+/* --- Base Container for Detail Page --- */
+.book-detail-page {
+/* Uses the global body background color (var(--secondary-color)) */
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* --- Header for Detail Page (Similar to Home, but can differ) --- */
+.book-detail-header {
+padding: 12px 30px;
+background: var(--card-bg);
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+border-bottom: 1px solid var(--border-color);
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 10;
+width: 100%; /* Ensure header spans width */
+}
+
+.book-detail-header .back-button { /* Scope back-button */
+composes: button; /* Inherit base styles */
+background-color: transparent;
+color: var(--text-color-light);
+padding: 8px 10px;
+font-weight: 500;
+box-shadow: none;
+border: none;
+font-size: 0.95rem;
+line-height: 1; /* Adjust line height */
+}
+.book-detail-header .back-button span {
+  margin-right: 5px;
+  font-size: 1.1em;
+  vertical-align: middle; /* Align emoji better */
+}
+.book-detail-header .back-button:hover {
+background-color: rgba(0, 0, 0, 0.03);
+color: var(--text-color);
+text-decoration: none;
+transform: none;
+box-shadow: none;
+}
+
+/* --- Main Content Area Styling --- */
+.book-detail-main-content {
+flex-grow: 1;
+padding: 30px 40px;
+max-width: 1100px;
+margin: 30px auto;
+width: calc(100% - 40px); /* Use calc for responsiveness */
+background-color: var(--card-bg);
+border-radius: var(--border-radius);
+box-shadow: var(--card-shadow);
+border: 1px solid var(--border-color);
+}
+
+/* --- Loading/Error states within Detail Page --- */
+.book-detail-main-content .loading-container,
+.book-detail-main-content .error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  text-align: center;
+  padding: 40px 20px;
+}
+.book-detail-main-content .error-container .error-text { /* Scope error text */
+  /* Use global .error-text styles, but add specifics if needed */
+  font-size: 1rem;
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--error-color);
+  padding: 15px 25px;
+  border-radius: var(--border-radius);
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+.book-detail-main-content .error-container .button { /* Style button in error state */
+  margin-top: 20px;
+  /* Define which button style to use, e.g., secondary */
+  composes: button; /* Use base and add specifics */
+  background-color: var(--text-color-light);
+  color: white;
+}
+.book-detail-main-content .error-container .button:hover {
+  background-color: var(--text-color);
+}
+
+
+/* --- Layout Grid for Book Details --- */
+.book-detail-content-wrapper {
+display: grid;
+grid-template-columns: minmax(250px, 300px) 1fr;
+gap: 50px;
+}
+
+/* --- Left Column (Cover + Actions) --- */
+.book-detail-cover-column {
+display: flex;
+flex-direction: column;
+align-items: center;
+position: sticky;
+top: 90px; /* Adjust based on header height + spacing */
+align-self: start;
+max-height: calc(100vh - 120px); /* Limit height */
+}
+
+.book-detail-cover-container {
+ width: 100%;
+ margin-bottom: 25px; /* Space below image */
+}
+
+.book-detail-cover {
+width: 100%;
+height: auto;
+aspect-ratio: 2 / 3;
+object-fit: cover;
+border-radius: var(--border-radius);
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+background-color: #eee;
+display: block;
+}
+.book-detail-cover.image-error {
+  object-fit: contain;
+  background-color: #ddd;
+}
+
+/* --- Actions below cover --- */
+.book-detail-actions.below-cover {
+margin-top: 0;
+padding-top: 0;
+border-top: none;
+display: flex;
+flex-direction: column;
+gap: 15px;
+width: 100%;
+}
+
+/* Specific button styling for Borrow */
+.book-detail-actions .borrow-button {
+ composes: button; /* Inherit base */
+ background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+ color: #ffffff;
+ width: 100%;
+ padding: 14px 20px;
+ font-size: 1.1rem;
+ font-weight: 600; /* Make text bolder */
+}
+.book-detail-actions .borrow-button:hover:not(:disabled) {
+  background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color));
+}
+/* Add styles for other potential action buttons here if needed */
+/* .book-detail-actions .wishlist-button { ... } */
+
+/* --- Right Column (Info) --- */
+.book-detail-info-container {
+text-align: left;
+padding-top: 10px;
+}
+
+.book-detail-info-container .book-detail-title { /* Scope title */
+font-size: 2.5rem;
+font-weight: 700;
+color: var(--text-color); /* Use global text color */
+margin-bottom: 5px;
+line-height: 1.2;
+}
+
+.book-detail-info-container .book-detail-author { /* Scope author */
+font-size: 1.4rem;
+color: var(--text-color-light); /* Use global light text color */
+margin-bottom: 25px;
+font-weight: 400;
+}
+.book-detail-info-container .author-link { /* Scope link */
+  color: var(--primary-color-dark); /* Use a theme blue */
+  text-decoration: none;
+  font-weight: 500;
+}
+.book-detail-info-container .author-link:hover {
+  text-decoration: underline;
+}
+
+/* Meta Info Row */
+.book-detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.book-detail-genre-tag {
+  background-color: var(--tag-bg);
+  color: var(--tag-text);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.book-detail-availability {
+font-size: 0.95rem;
+font-weight: 500;
+display: inline-flex;
+align-items: center;
+}
+.book-detail-availability.available {
+  color: var(--available-color);
+}
+.book-detail-availability.unavailable {
+  color: var(--unavailable-color);
+}
+.book-detail-availability .total-copies {
+  color: var(--text-color-light);
+  font-weight: 400;
+  font-size: 0.9em;
+  margin-left: 5px;
+}
+
+/* About Section */
+.book-detail-about {
+margin-top: 30px;
+}
+
+.book-detail-about h2 { /* Scope h2 */
+font-size: 1.5rem;
+font-weight: 600;
+color: var(--text-color);
+margin-bottom: 15px;
+padding-bottom: 10px;
+border-bottom: 2px solid var(--primary-color); /* Use theme color */
+display: inline-block;
+}
+
+.book-detail-about .about-text { /* Scope paragraph */
+font-size: 1.05rem;
+line-height: 1.8;
+color: var(--text-color); /* Use standard text color for readability */
+white-space: pre-wrap;
+}
+
+/* --- Spinner Animation (Keep as is) --- */
+.spinner {
+border: 4px solid rgba(0, 0, 0, 0.1);
+width: 36px;
+height: 36px;
+border-radius: 50%;
+border-left-color: var(--primary-color); /* Use theme color */
+animation: spin 1s ease infinite;
+margin-bottom: 15px; /* Space between spinner and text */
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* --- Responsive Adjustments for Book Detail Page ONLY --- */
+@media (max-width: 900px) {
+.book-detail-content-wrapper {
+  grid-template-columns: 200px 1fr;
+  gap: 30px;
+}
+ .book-detail-info-container .book-detail-title { /* Scope title */
+      font-size: 2rem;
+ }
+ .book-detail-info-container .book-detail-author { /* Scope author */
+      font-size: 1.2rem;
+ }
+}
+
+
+@media (max-width: 768px) {
+.book-detail-main-content {
+   padding: 20px;
+   margin: 15px;
+   width: calc(100% - 30px);
+}
+
+.book-detail-content-wrapper {
+  grid-template-columns: 1fr; /* Stack columns */
+  gap: 30px;
+}
+
+.book-detail-cover-column {
+  position: static;
+  max-height: none;
+  width: 70%;
+  max-width: 280px;
+  margin: 0 auto 20px auto; /* Add bottom margin when stacked */
+}
+
+.book-detail-cover-container {
+   margin-bottom: 25px;
+}
+
+.book-detail-info-container {
+    padding-top: 0;
+    text-align: center; /* Center text content in info container */
+}
+
+.book-detail-info-container .book-detail-title {
+    font-size: 1.8rem;
+    /* text-align: center; /* Already centered by container */
+}
+.book-detail-info-container .book-detail-author {
+    font-size: 1.1rem;
+    /* text-align: center; */
+    margin-bottom: 20px;
+}
+ .book-detail-meta {
+     justify-content: center;
+     padding-bottom: 15px;
+     margin-bottom: 25px;
+ }
+ .book-detail-about {
+     margin-top: 25px;
+     text-align: left; /* Keep about text left-aligned */
+ }
+ .book-detail-about h2 {
+     font-size: 1.3rem;
+     display: block;
      text-align: center;
-     color: var(--text-color-light);
-  }
-  
-  /* --- Optional Footer --- */
-  .home-footer {
-      text-align: center;
-      padding: 20px;
-      margin-top: 40px; /* Space above footer */
-      color: var(--text-color-light);
-      font-size: 0.9rem;
-      border-top: 1px solid var(--border-color);
-  }
+     border-bottom-width: 1px;
+     margin-left: auto; /* Center the heading block */
+     margin-right: auto;
+ }
+ .book-detail-about .about-text {
+     font-size: 1rem;
+     line-height: 1.7;
+ }
+}
+
+/* ======================================================== */
+/* --- END: Styles specific to Book Detail Page --- */
+/* ======================================================== */

@@ -1,7 +1,7 @@
 // frontend/src/Home.js
 import React, { useState, useEffect } from 'react';
 import API from './api'; // Your configured axios instance
-// Optional: import { Link } from 'react-router-dom'; // If you want to link to book detail pages later
+import { Link } from 'react-router-dom'; // Import Link
 
 export default function Home({ user, onLogout }) {
   const [books, setBooks] = useState([]);
@@ -58,8 +58,9 @@ export default function Home({ user, onLogout }) {
         {!isLoading && !error && books.length > 0 && (
           <div className="book-grid">
             {books.map((book) => (
-              <div key={book._id} className="book-card">
-          
+             // Wrap the entire card content in a Link
+             <Link key={book._id} to={`/books/${book._id}`} className="book-card-link">
+               <div className="book-card">
                   <img
                     src={book.image || 'https://via.placeholder.com/150x220?text=No+Image'} // Use placeholder if image missing
                     alt={`${book.title} cover`}
@@ -71,8 +72,8 @@ export default function Home({ user, onLogout }) {
                     <p className="book-author">by {book.author}</p>
                     {/* Add more info like genre or rating if needed */}
                   </div>
-                {/* </Link> */}
-              </div>
+               </div>
+             </Link>
             ))}
           </div>
         )}
