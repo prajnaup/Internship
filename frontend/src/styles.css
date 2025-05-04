@@ -12,6 +12,10 @@
   --error-color: #dc3545;
   --success-color: #28a745; /* Added for potential success messages */
   --link-color: var(--primary-color);
+  --tag-bg: #e7f3ff; /* Light blue background for tags */
+  --tag-text: #0d6efd; /* Blue text for tags */
+  --available-color: var(--success-color);
+  --unavailable-color: var(--error-color);
 
   --font-family: 'Poppins', Arial, sans-serif; /* Use the imported font */
   --border-radius: 8px;
@@ -163,12 +167,12 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.button:hover {
+.button:hover:not(:disabled) { /* Added :not(:disabled) */
   transform: translateY(-2px); /* Slight lift on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.button:active {
+.button:active:not(:disabled) { /* Added :not(:disabled) */
   transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -178,68 +182,85 @@ body {
   cursor: not-allowed;
   transform: none;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Added from later version - safe global change */
   background: #ccc !important; /* Use important to override specific button styles if needed */
   color: #777 !important;
   border-color: #ccc !important;
 }
 
-/* Primary Button (Submit) */
-.submit-button {
-  composes: button; /* Inherit base styles */
+/* Specific Button Types */
+.primary-button {
   background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
   color: #ffffff;
 }
-
-.submit-button:hover:not(:disabled) {
-  background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color)); /* Slightly shift gradient */
+.primary-button:hover:not(:disabled) {
+  background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color));
 }
 
-/* Danger Button (Logout) */
+.secondary-button {
+  background-color: var(--text-color-light);
+  color: white;
+}
+.secondary-button:hover:not(:disabled) {
+  background-color: var(--text-color);
+}
+
+.tertiary-button {
+    background-color: #6c757d; /* Grey */
+    color: white;
+}
+.tertiary-button:hover:not(:disabled){
+    background-color: #5a6268;
+}
+
+.submit-button { /* Sign-in/Profile submit */
+  /* Inherits .button */
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+  color: #ffffff;
+}
+.submit-button:hover:not(:disabled) {
+  background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color));
+}
+
 .logout-button {
-  composes: button; /* Inherit base styles */
+  /* Inherits .button */
   background-color: var(--error-color);
   color: #ffffff;
-  margin-top: 16px; /* Space above logout button */
+  margin-top: 16px; /* Space above logout button in forms */
 }
-
 .logout-button:hover:not(:disabled) {
   background-color: #c82333; /* Darker red on hover */
 }
 
-/* Google Button Container - Adjust spacing around the standard Google button */
+/* Google Button Container */
 .button-container {
-  margin-top: 24px; /* Space above Google button */
+  margin-top: 24px;
   margin-bottom: 16px;
-  display: flex; /* Use flex to easily center the button itself if needed */
+  display: flex;
   justify-content: center;
-  /* Resetting previous conflicting styles */
   padding: 0;
   background-color: transparent;
   border: none;
   cursor: default;
 }
-
-/* Style the Google Button itself (limited options) */
-.button-container > div { /* Target the div rendered by react-oauth-google */
-    border-radius: var(--border-radius) !important; /* Try to enforce border radius */
+.button-container > div {
+    border-radius: var(--border-radius) !important;
     box-shadow: var(--input-shadow) !important;
     transition: box-shadow var(--transition-speed);
 }
 .button-container > div:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Slightly more shadow on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 
 /* --- Avatar / Placeholders --- */
 .avatar, .avatar-placeholder {
-  width: 100px; /* Slightly larger */
+  width: 100px;
   height: 100px;
   border-radius: 50%;
-  margin: 24px auto; /* More vertical margin */
-  object-fit: cover; /* Ensure image covers the area */
-  border: 3px solid var(--card-bg); /* Border matching card background */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow around avatar */
+  margin: 24px auto;
+  object-fit: cover;
+  border: 3px solid var(--card-bg);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .avatar-placeholder {
@@ -247,7 +268,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem; /* Larger initial */
+  font-size: 2.5rem;
   font-weight: 600;
   color: #ffffff;
 }
@@ -256,38 +277,33 @@ body {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-top: 12px; /* Space above preview */
-  display: block; /* Ensure it takes block space */
-  margin-left: 0; /* Align left within form group */
+  margin-top: 12px;
+  display: block;
+  margin-left: 0;
   object-fit: cover;
   border: 2px solid var(--border-color);
 }
 
-/* --- Home Specific --- */
-/* NOTE: The styles below were PREVIOUSLY under this comment,
-   they are correctly scoped and should remain */
 
-/* --- Additions for Home Page --- */
-
+/* --- Home Page --- */
 .home-page-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: var(--secondary-color); /* Or a different background for the home page */
+  background-color: var(--secondary-color);
 }
 
-/* --- Home Header --- */
 .home-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 30px;
-  background: var(--card-bg); /* White background */
+  background: var(--card-bg);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border-bottom: 1px solid var(--border-color);
-  position: sticky; /* Make header sticky */
+  position: sticky;
   top: 0;
-  z-index: 10; /* Ensure it's above content */
+  z-index: 10;
   width: 100%;
 }
 
@@ -303,7 +319,6 @@ body {
     border-radius: 50%;
     object-fit: cover;
 }
-
 .header-avatar-placeholder {
     background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
     display: flex;
@@ -318,24 +333,39 @@ body {
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--text-color);
-  margin: 0; /* Reset default margin */
+  margin: 0;
+}
+
+.header-nav { /* Style container for right-side items */
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.header-nav-button {
+    /* Inherits .button and .secondary-button */
+    padding: 8px 18px; /* Consistent with logout button */
+    font-size: 0.9rem;
+    margin-top: 0; /* Override default button margin */
+    text-decoration: none; /* Ensure links look like buttons */
+    color: white; /* Ensure text color for secondary */
+}
+.header-nav-button:hover {
+    color: white; /* Maintain text color on hover */
 }
 
 .header-logout {
-  margin-top: 0; /* Override default margin from .logout-button */
-  padding: 8px 18px; /* Slightly smaller padding for header button */
+  margin-top: 0; /* Override base */
+  padding: 8px 18px;
   font-size: 0.9rem;
-  /* Ensure it composes button styles correctly (already does via .logout-button) */
 }
 
-
-/* --- Main Book Display Area --- */
 .book-display-area {
   padding: 30px;
-  flex-grow: 1; /* Takes remaining vertical space */
+  flex-grow: 1;
   width: 100%;
-  max-width: 1200px; /* Limit max width for better readability on large screens */
-  margin: 0 auto; /* Center the content area */
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .section-title {
@@ -343,32 +373,28 @@ body {
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 25px;
-  text-align: left; /* Align title to the left */
-  border-bottom: 2px solid var(--primary-color); /* Add an underline */
+  text-align: left;
+  border-bottom: 2px solid var(--primary-color);
   padding-bottom: 8px;
 }
 
-/* --- Book Grid --- */
 .book-grid {
   display: grid;
-  /* Responsive grid: Adjust minmax width for desired card size */
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 25px; /* Gap between grid items */
+  gap: 25px;
 }
 
-/* --- Book Card --- */
 .book-card {
   background-color: var(--card-bg);
   border-radius: var(--border-radius);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden; /* Ensure image corners are rounded if image overflows */
+  overflow: hidden;
   transition: transform var(--transition-speed), box-shadow var(--transition-speed);
   display: flex;
   flex-direction: column;
-  text-align: left; /* Align text left within the card */
-  height: 100%; /* Ensure cards in a row can align height */
+  text-align: left;
+  height: 100%;
 }
-
 .book-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
@@ -376,172 +402,162 @@ body {
 
 .book-cover {
   width: 100%;
-  /* Maintain aspect ratio - adjust as needed, e.g., 2 / 3 */
   aspect-ratio: 2 / 3;
-  object-fit: cover; /* Cover the area, may crop */
-  /* object-fit: contain; */ /* Fit entire image, may leave gaps */
-  background-color: #eee; /* Placeholder color while image loads */
-  border-bottom: 1px solid var(--border-color); /* Separator */
+  object-fit: cover;
+  background-color: #eee;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .book-info {
   padding: 12px 15px;
-  flex-grow: 1; /* Allows info to take remaining space if needed */
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Pushes author down if card height varies */
+  justify-content: space-between;
 }
 
 .book-title {
-  font-size: 1rem; /* Adjust as needed */
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
-  margin: 0 0 5px 0; /* Bottom margin */
-  /* Limit title lines and add ellipsis */
+  margin: 0 0 5px 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Show max 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 2.4em; /* Approximate height for 2 lines */
+  min-height: 2.4em;
 }
 
 .book-author {
   font-size: 0.85rem;
   color: var(--text-color-light);
   margin: 0;
-   /* Limit author lines */
    white-space: nowrap;
    overflow: hidden;
    text-overflow: ellipsis;
 }
 
-/* Link wrapper for book card */
 .book-card-link {
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit text color */
-  display: block; /* Make link take up block space */
-  outline: none; /* Remove default outline */
-  height: 100%; /* Make link fill the grid area */
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  outline: none;
+  height: 100%;
 }
-
-.book-card-link:focus-visible .book-card { /* Style card on focus */
+.book-card-link:focus-visible .book-card {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Enhance shadow on focus */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-
-/* --- Loading and Error Text (Leverage existing) --- */
 .home-page-container .loading-text {
-  /* Use existing .loading-text styles */
    margin-top: 40px;
    font-size: 1.1rem;
 }
-
 .home-page-container .error-text {
-  /* Use existing .error-text styles */
   margin-top: 40px;
   text-align: center;
   padding: 15px;
-  background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+  background-color: rgba(220, 53, 69, 0.1);
   border: 1px solid var(--error-color);
   border-radius: var(--border-radius);
 }
-
 .home-page-container .info-text {
-   /* Use existing .info-text or add specific styles */
    margin-top: 40px;
    text-align: center;
    color: var(--text-color-light);
 }
 
-/* --- Optional Footer --- */
 .home-footer {
     text-align: center;
     padding: 20px;
-    margin-top: auto; /* Changed from 40px to auto */
+    margin-top: auto;
     color: var(--text-color-light);
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
-    background-color: var(--card-bg); /* Give footer a background */
-    width: 100%; /* Ensure footer spans width */
+    background-color: var(--card-bg);
+    width: 100%;
 }
 
 /* ======================================================== */
 /* --- START: Styles specific to Book Detail Page --- */
 /* ======================================================== */
 
-/* --- New Variables for Book Detail (Additions only) --- */
-:root {
-  --tag-bg: #e7f3ff; /* Light blue background for tags */
-  --tag-text: #0d6efd; /* Blue text for tags */
-  --available-color: var(--success-color);
-  --unavailable-color: var(--error-color);
-  /* Use original --link-color for consistency unless specifically overridden */
-}
-
-/* --- Base Container for Detail Page --- */
 .book-detail-page {
-/* Uses the global body background color (var(--secondary-color)) */
-min-height: 100vh;
-display: flex;
-flex-direction: column;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- Header for Detail Page (Similar to Home, but can differ) --- */
 .book-detail-header {
-padding: 12px 30px;
-background: var(--card-bg);
-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-border-bottom: 1px solid var(--border-color);
-display: flex;
-align-items: center;
-justify-content: space-between;
-position: sticky;
-top: 0;
-z-index: 10;
-width: 100%; /* Ensure header spans width */
+  padding: 12px 30px;
+  background: var(--card-bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
 }
 
-.book-detail-header .back-button { /* Scope back-button */
-composes: button; /* Inherit base styles */
-background-color: transparent;
-color: var(--text-color-light);
-padding: 8px 10px;
-font-weight: 500;
-box-shadow: none;
-border: none;
-font-size: 0.95rem;
-line-height: 1; /* Adjust line height */
+.book-detail-header .back-button {
+  background-color: transparent;
+  color: var(--text-color-light);
+  padding: 8px 10px;
+  font-weight: 500;
+  box-shadow: none;
+  border: none;
+  font-size: 0.95rem;
+  line-height: 1;
+  /* Inherits base .button styles implicitly via className="button back-button" */
 }
 .book-detail-header .back-button span {
   margin-right: 5px;
   font-size: 1.1em;
-  vertical-align: middle; /* Align emoji better */
+  vertical-align: middle;
 }
 .book-detail-header .back-button:hover {
-background-color: rgba(0, 0, 0, 0.03);
-color: var(--text-color);
-text-decoration: none;
-transform: none;
-box-shadow: none;
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-color);
+  text-decoration: none;
+  transform: none;
+  box-shadow: none;
 }
 
-/* --- Main Content Area Styling --- */
+.header-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.header-avatar-small {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.header-avatar-placeholder.header-avatar-small {
+     width: 30px;
+     height: 30px;
+     font-size: 1rem;
+     /* Inherits background/color from .header-avatar-placeholder */
+}
+
 .book-detail-main-content {
-flex-grow: 1;
-padding: 30px 40px;
-max-width: 1100px;
-margin: 30px auto;
-width: calc(100% - 40px); /* Use calc for responsiveness */
-background-color: var(--card-bg);
-border-radius: var(--border-radius);
-box-shadow: var(--card-shadow);
-border: 1px solid var(--border-color);
+  flex-grow: 1;
+  padding: 30px 40px;
+  max-width: 1100px;
+  margin: 30px auto;
+  width: calc(100% - 40px);
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
 }
 
-/* --- Loading/Error states within Detail Page --- */
 .book-detail-main-content .loading-container,
 .book-detail-main-content .error-container {
   display: flex;
@@ -552,8 +568,7 @@ border: 1px solid var(--border-color);
   text-align: center;
   padding: 40px 20px;
 }
-.book-detail-main-content .error-container .error-text { /* Scope error text */
-  /* Use global .error-text styles, but add specifics if needed */
+.book-detail-main-content .error-container .error-text {
   font-size: 1rem;
   background-color: rgba(220, 53, 69, 0.1);
   border: 1px solid var(--error-color);
@@ -562,105 +577,108 @@ border: 1px solid var(--border-color);
   max-width: 500px;
   margin-bottom: 20px;
 }
-.book-detail-main-content .error-container .button { /* Style button in error state */
+.book-detail-main-content .error-container .button {
   margin-top: 20px;
-  /* Define which button style to use, e.g., secondary */
-  composes: button; /* Use base and add specifics */
   background-color: var(--text-color-light);
   color: white;
+  /* Inherits base .button styles */
 }
 .book-detail-main-content .error-container .button:hover {
   background-color: var(--text-color);
 }
 
-
-/* --- Layout Grid for Book Details --- */
 .book-detail-content-wrapper {
-display: grid;
-grid-template-columns: minmax(250px, 300px) 1fr;
-gap: 50px;
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) 1fr;
+  gap: 50px;
 }
 
-/* --- Left Column (Cover + Actions) --- */
 .book-detail-cover-column {
-display: flex;
-flex-direction: column;
-align-items: center;
-position: sticky;
-top: 90px; /* Adjust based on header height + spacing */
-align-self: start;
-max-height: calc(100vh - 120px); /* Limit height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: sticky;
+  top: 90px;
+  align-self: start;
+  max-height: calc(100vh - 120px);
 }
 
 .book-detail-cover-container {
  width: 100%;
- margin-bottom: 25px; /* Space below image */
+ margin-bottom: 25px;
 }
 
 .book-detail-cover {
-width: 100%;
-height: auto;
-aspect-ratio: 2 / 3;
-object-fit: cover;
-border-radius: var(--border-radius);
-box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-background-color: #eee;
-display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  background-color: #eee;
+  display: block;
 }
 .book-detail-cover.image-error {
   object-fit: contain;
   background-color: #ddd;
 }
 
-/* --- Actions below cover --- */
 .book-detail-actions.below-cover {
-margin-top: 0;
-padding-top: 0;
-border-top: none;
-display: flex;
-flex-direction: column;
-gap: 15px;
-width: 100%;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
 }
 
-/* Specific button styling for Borrow */
+/* Borrow/Return buttons inherit .button base styles */
 .book-detail-actions .borrow-button {
- composes: button; /* Inherit base */
  background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
  color: #ffffff;
  width: 100%;
  padding: 14px 20px;
  font-size: 1.1rem;
- font-weight: 600; /* Make text bolder */
+ font-weight: 600;
 }
 .book-detail-actions .borrow-button:hover:not(:disabled) {
   background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color));
 }
-/* Add styles for other potential action buttons here if needed */
-/* .book-detail-actions .wishlist-button { ... } */
 
-/* --- Right Column (Info) --- */
+.book-detail-actions .return-button {
+  background-color: var(--success-color);
+  color: #ffffff;
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.book-detail-actions .return-button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
 .book-detail-info-container {
-text-align: left;
-padding-top: 10px;
+  text-align: left;
+  padding-top: 10px;
 }
 
-.book-detail-info-container .book-detail-title { /* Scope title */
-font-size: 2.5rem;
-font-weight: 700;
-color: var(--text-color); /* Use global text color */
-margin-bottom: 5px;
-line-height: 1.2;
+.book-detail-info-container .book-detail-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 5px;
+  line-height: 1.2;
 }
 
-.book-detail-info-container .book-detail-author { /* Scope author */
-font-size: 1.4rem;
-color: var(--text-color-light); /* Use global light text color */
-margin-bottom: 25px;
-font-weight: 400;
+.book-detail-info-container .book-detail-author {
+  font-size: 1.4rem;
+  color: var(--text-color-light);
+  margin-bottom: 25px;
+  font-weight: 400;
 }
-.book-detail-info-container .author-link { /* Scope link */
-  color: var(--primary-color-dark); /* Use a theme blue */
+.book-detail-info-container .author-link {
+  color: var(--primary-color-dark);
   text-decoration: none;
   font-weight: 500;
 }
@@ -668,7 +686,6 @@ font-weight: 400;
   text-decoration: underline;
 }
 
-/* Meta Info Row */
 .book-detail-meta {
   display: flex;
   flex-wrap: wrap;
@@ -690,10 +707,10 @@ font-weight: 400;
 }
 
 .book-detail-availability {
-font-size: 0.95rem;
-font-weight: 500;
-display: inline-flex;
-align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
 }
 .book-detail-availability.available {
   color: var(--available-color);
@@ -708,120 +725,773 @@ align-items: center;
   margin-left: 5px;
 }
 
-/* About Section */
+.book-detail-borrow-status {
+  font-weight: 600;
+  color: var(--primary-color);
+  background-color: rgba(106, 17, 203, 0.1);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.borrow-limit-info {
+    color: var(--text-color-light);
+    font-size: 0.9em;
+    margin-left: 10px;
+}
+
 .book-detail-about {
-margin-top: 30px;
+  margin-top: 30px;
 }
 
-.book-detail-about h2 { /* Scope h2 */
-font-size: 1.5rem;
-font-weight: 600;
-color: var(--text-color);
-margin-bottom: 15px;
-padding-bottom: 10px;
-border-bottom: 2px solid var(--primary-color); /* Use theme color */
-display: inline-block;
+.book-detail-about h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--primary-color);
+  display: inline-block;
 }
 
-.book-detail-about .about-text { /* Scope paragraph */
-font-size: 1.05rem;
-line-height: 1.8;
-color: var(--text-color); /* Use standard text color for readability */
-white-space: pre-wrap;
+.book-detail-about .about-text {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-color);
+  white-space: pre-wrap;
 }
 
-/* --- Spinner Animation (Keep as is) --- */
+/* ======================================================== */
+/* --- START: Borrow/Return Modal Styles --- */
+/* ======================================================== */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure it's on top */
+  padding: 20px; /* Padding around the modal */
+}
+
+.modal-content {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 25px 30px;
+  max-width: 700px; /* Adjust max width as needed */
+  width: 100%;
+  max-height: 90vh; /* Limit height */
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack header, body, footer */
+  overflow: hidden; /* Prevent content breaking out, scrolling handled internally */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--text-color-light);
+  cursor: pointer;
+  padding: 0 5px;
+  transition: color 0.2s ease;
+}
+.modal-close-button:hover {
+  color: var(--text-color);
+}
+
+.modal-body {
+  flex-grow: 1; /* Allows body to take up remaining space */
+  overflow-y: auto; /* Allow ONLY the body to scroll if content exceeds modal height */
+  text-align: center;
+  padding-right: 10px; /* Add some padding for scrollbar */
+  margin-right: -10px; /* Counteract padding visually */
+}
+
+/* --- Webcam & Capture Styles within Modal --- */
+.webcam-container {
+    position: relative; /* Needed if you ever add overlays */
+    margin: 0 auto 15px auto; /* Center horizontally, add space below */
+    max-width: 480px; /* Limit webcam preview size */
+    width: 100%; /* Take available width up to max-width */
+    border-radius: var(--border-radius);
+    overflow: hidden; /* Clip video */
+    border: 1px solid var(--border-color);
+    background-color: #f0f0f0; /* Placeholder bg */
+    aspect-ratio: 4 / 3; /* Maintain a common aspect ratio */
+    display: flex; /* Use flex for webcam centering if needed */
+    justify-content: center;
+    align-items: center;
+}
+.webcam-container video {
+    display: block;
+    width: 100%;
+    height: 100%; /* Fill container */
+    object-fit: cover;
+}
+
+/* Button to capture photo - ensure it's clearly visible */
+.capture-main-button {
+    display: block; /* Make it block to take width */
+    margin: 15px auto 10px auto; /* Center and add spacing */
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    /* Inherits .button .primary-button styles */
+}
+
+.thumbnail-instruction {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-top: 10px; /* Space above thumbnails */
+    margin-bottom: 15px;
+}
+
+/* Thumbnail Grid within Modal */
+.image-thumbnails-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
+  gap: 15px; /* Slightly larger gap */
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.thumbnail-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+.thumbnail-slot p {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 3px;
+    white-space: nowrap;
+}
+
+.thumbnail-preview, .thumbnail-placeholder {
+  width: 100%;
+  aspect-ratio: 1 / 1; /* Square */
+  object-fit: cover;
+  border-radius: 6px; /* Slightly rounder corners */
+  border: 1px solid var(--border-color);
+  background-color: #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; /* Ensure image doesn't overflow */
+}
+
+.thumbnail-placeholder::before {
+    content: 'Empty';
+    font-size: 0.8rem;
+    color: var(--text-color-light);
+}
+
+.thumbnail-slot .button.retake-button {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    width: auto; /* Fit content */
+    min-width: 60px; /* Minimum width */
+    margin-top: 4px;
+     background-color: var(--error-color);
+     color: white;
+     /* Inherits base .button styles */
+}
+
+.thumbnail-slot .button.tertiary-button {
+     background-color: #6c757d;
+     color: white;
+     /* Inherits base .button styles */
+}
+.thumbnail-slot .button.tertiary-button:hover:not(:disabled){
+    background-color: #5a6268;
+}
+
+/* --- Modal Footer --- */
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-top: 10px; /* Reduced margin */
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 15px;
+    flex-shrink: 0; /* Prevent footer from shrinking */
+}
+.modal-footer .spinner {
+    margin: 0 auto; /* Center spinner if it replaces buttons */
+    margin-bottom: 0; /* Override base spinner margin */
+}
+
+/* Error text specific to modal */
+.modal-body .camera-error {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+}
+.modal-body .submit-error {
+   margin-top: 15px;
+   margin-bottom: 15px;
+   font-size: 0.9rem;
+}
+
+
+/* --- Spinner Animation --- */
 .spinner {
-border: 4px solid rgba(0, 0, 0, 0.1);
-width: 36px;
-height: 36px;
-border-radius: 50%;
-border-left-color: var(--primary-color); /* Use theme color */
-animation: spin 1s ease infinite;
-margin-bottom: 15px; /* Space between spinner and text */
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: var(--primary-color);
+  animation: spin 1s ease infinite;
+  margin-bottom: 15px;
+}
+/* Adjust spinner size when used inline in buttons */
+.button .spinner {
+    width: 1.2em; /* Size relative to button font size */
+    height: 1.2em;
+    border-width: 2px;
+    margin: 0; /* Remove margin when inside button */
+    display: inline-block; /* Allow it inside button */
+    vertical-align: middle;
 }
 
 @keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* --- Responsive Adjustments for Book Detail Page ONLY --- */
-@media (max-width: 900px) {
-.book-detail-content-wrapper {
-  grid-template-columns: 200px 1fr;
+/* --- My Borrows Page Styles --- */
+.my-borrows-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--secondary-color);
+}
+
+.my-borrows-content {
+  padding: 30px;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.borrowed-books-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Wider cards for borrows */
   gap: 30px;
 }
- .book-detail-info-container .book-detail-title { /* Scope title */
-      font-size: 2rem;
- }
- .book-detail-info-container .book-detail-author { /* Scope author */
-      font-size: 1.2rem;
- }
+
+.borrowed-book-item {
+  /* Reusing .card style for base */
+  display: flex; /* Layout items horizontally */
+  gap: 20px;
+  text-align: left;
+  padding: 20px; /* Adjust padding */
+  align-items: flex-start; /* Align items at the top */
+}
+
+.borrowed-book-cover,
+.borrowed-book-cover-placeholder {
+  width: 100px; /* Fixed width for cover */
+  height: 150px; /* Fixed height */
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0; /* Prevent image from shrinking */
+  background-color: #e0e0e0; /* Placeholder bg */
+}
+.borrowed-book-cover-placeholder {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 0.8rem;
+   color: var(--text-color-light);
+}
+
+
+.borrowed-book-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+  height: 100%; /* Try to fill height */
+}
+
+.borrowed-book-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+}
+.borrowed-book-info p {
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+  margin: 0 0 8px 0;
+}
+.borrowed-book-info .due-date {
+  font-weight: 500;
+  color: var(--error-color); /* Make due date stand out */
+  margin-top: auto; /* Push to bottom */
+  margin-bottom: 10px;
+}
+
+.return-button-small {
+   /* Inherits .button */
+   background-color: var(--success-color);
+   color: white;
+   padding: 6px 15px; /* Smaller padding */
+   font-size: 0.9rem;
+   align-self: flex-start; /* Align button left */
+}
+.return-button-small:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+
+/* ======================================================== */
+/* --- Responsive Adjustments --- */
+/* ======================================================== */
+
+@media (max-width: 900px) {
+  .book-detail-content-wrapper {
+    grid-template-columns: 200px 1fr;
+    gap: 30px;
+  }
+   .book-detail-info-container .book-detail-title {
+        font-size: 2rem;
+   }
+   .book-detail-info-container .book-detail-author {
+        font-size: 1.2rem;
+   }
+   .borrowed-books-list {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+   }
 }
 
 
 @media (max-width: 768px) {
-.book-detail-main-content {
-   padding: 20px;
-   margin: 15px;
-   width: calc(100% - 30px);
-}
+  .book-detail-main-content {
+     padding: 20px;
+     margin: 15px;
+     width: calc(100% - 30px);
+  }
 
-.book-detail-content-wrapper {
-  grid-template-columns: 1fr; /* Stack columns */
-  gap: 30px;
-}
+  .book-detail-content-wrapper {
+    grid-template-columns: 1fr; /* Stack columns */
+    gap: 30px;
+  }
 
-.book-detail-cover-column {
-  position: static;
-  max-height: none;
-  width: 70%;
-  max-width: 280px;
-  margin: 0 auto 20px auto; /* Add bottom margin when stacked */
-}
+  .book-detail-cover-column {
+    position: static; /* Unstick the column */
+    max-height: none;
+    width: 70%;
+    max-width: 280px;
+    margin: 0 auto 20px auto;
+  }
 
-.book-detail-cover-container {
-   margin-bottom: 25px;
-}
-
-.book-detail-info-container {
-    padding-top: 0;
-    text-align: center; /* Center text content in info container */
-}
-
-.book-detail-info-container .book-detail-title {
-    font-size: 1.8rem;
-    /* text-align: center; /* Already centered by container */
-}
-.book-detail-info-container .book-detail-author {
-    font-size: 1.1rem;
-    /* text-align: center; */
-    margin-bottom: 20px;
-}
- .book-detail-meta {
-     justify-content: center;
-     padding-bottom: 15px;
+  .book-detail-cover-container {
      margin-bottom: 25px;
- }
- .book-detail-about {
-     margin-top: 25px;
-     text-align: left; /* Keep about text left-aligned */
- }
- .book-detail-about h2 {
-     font-size: 1.3rem;
-     display: block;
-     text-align: center;
-     border-bottom-width: 1px;
-     margin-left: auto; /* Center the heading block */
-     margin-right: auto;
- }
- .book-detail-about .about-text {
-     font-size: 1rem;
-     line-height: 1.7;
- }
+  }
+
+  .book-detail-info-container {
+      padding-top: 0;
+      text-align: center;
+  }
+
+  .book-detail-info-container .book-detail-title {
+      font-size: 1.8rem;
+  }
+  .book-detail-info-container .book-detail-author {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+  }
+   .book-detail-meta {
+       justify-content: center;
+       padding-bottom: 15px;
+       margin-bottom: 25px;
+   }
+   .book-detail-about {
+       margin-top: 25px;
+       text-align: left;
+   }
+   .book-detail-about h2 {
+       font-size: 1.3rem;
+       display: block;
+       text-align: center;
+       border-bottom-width: 1px;
+       margin-left: auto;
+       margin-right: auto;
+   }
+   .book-detail-about .about-text {
+       font-size: 1rem;
+       line-height: 1.7;
+   }
+    .borrowed-books-list {
+      grid-template-columns: 1fr; /* Stack borrowed books */
+   }
+   .borrowed-book-item {
+       flex-direction: column; /* Stack image and info */
+       align-items: center;
+       text-align: center;
+   }
+   .borrowed-book-info {
+       align-items: center;
+       text-align: center;
+   }
+    .borrowed-book-info .due-date {
+      margin-top: 10px;
+    }
+    .return-button-small {
+        align-self: center; /* Center button */
+    }
 }
+
+/* Modal specific responsiveness */
+@media (max-width: 700px) {
+  .modal-content {
+    max-width: 95%;
+    padding: 15px 20px; /* Reduce padding slightly */
+  }
+  .modal-header h2 {
+    font-size: 1.1rem; /* Smaller title */
+  }
+   .image-thumbnails-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid */
+    gap: 10px;
+   }
+   .modal-footer {
+      justify-content: center; /* Center buttons */
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 10px;
+      margin-top: 15px;
+      padding-top: 15px;
+   }
+   .modal-footer .button {
+       width: 100%; /* Make buttons full width */
+   }
+}
+
+@media (max-width: 600px) {
+    /* Adjust thumbnail grid for smaller screens if needed */
+    /* Keep the 2x2 grid from the 700px breakpoint or adjust further */
+    /* .image-thumbnails-grid { grid-template-columns: 1fr; } */ /* Example: stack */
+
+    .thumbnail-slot p {
+      font-size: 0.7rem;
+    }
+    .thumbnail-slot .button.retake-button {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+    }
+}
+
+.webcam-section { /* NEW Container for webcam + button below */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.webcam-container {
+  position: relative;
+  margin: 0 auto 15px auto; /* Center horizontally, space below */
+  max-width: 480px;
+  width: 100%;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: #f0f0f0;
+  aspect-ratio: 4 / 3; /* Or 16 / 9 if preferred */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.webcam-container video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Capture button below webcam */
+.capture-main-button {
+  display: block; /* Make it block */
+  margin-top: 15px; /* Add space above */
+  padding: 10px 25px;
+  font-size: 1.1rem;
+  min-width: 180px; /* Ensure it has some minimum width */
+  /* Inherits .button .primary-button styles */
+}
+
+.thumbnail-instruction {
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Thumbnail Grid within Modal */
+.image-thumbnails-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* More flexible columns */
+gap: 15px;
+margin-top: 15px;
+margin-bottom: 25px;
+padding: 0 10px; /* Add some padding */
+}
+
+.thumbnail-slot {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 5px;
+position: relative; /* For potential overlays if needed */
+}
+.thumbnail-slot p {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 3px;
+  white-space: nowrap;
+}
+
+.thumbnail-preview, .thumbnail-placeholder {
+width: 100%;
+aspect-ratio: 1 / 1; /* Keep square */
+object-fit: cover;
+border-radius: 6px;
+border: 1px solid var(--border-color);
+background-color: #e9ecef;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+font-size: 0.8rem; /* For placeholder text */
+color: var(--text-color-light); /* For placeholder text */
+}
+
+.thumbnail-slot .button.retake-button {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  width: auto;
+  min-width: 60px;
+  margin-top: 4px;
+  background-color: var(--error-color); /* Red for retake */
+  color: white;
+  border: none;
+  line-height: 1.2; /* Adjust line height */
+   /* Inherits base .button styles for transitions etc. */
+}
+.thumbnail-slot .button.retake-button:hover:not(:disabled) {
+  background-color: #c82333; /* Darker red */
+}
+
+/* Error text specific to modal */
+.modal-body .camera-error,
+.modal-body .submit-error {
+  margin: 15px 0; /* Consistent margin */
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--error-color);
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* --- My Borrows Page Styles --- */
+.my-borrows-page {
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+background-color: var(--secondary-color);
+}
+
+/* Reuse home header style for consistency */
+.my-borrows-page .home-header { }
+.my-borrows-page .welcome-user { }
+.my-borrows-page .header-avatar, .my-borrows-page .header-avatar-placeholder { }
+.my-borrows-page .header-title { }
+.my-borrows-page .header-nav { }
+.my-borrows-page .header-nav-button { }
+.my-borrows-page .header-logout { }
+
+.my-borrows-content {
+padding: 30px;
+flex-grow: 1;
+width: 100%;
+max-width: 1200px; /* Limit content width */
+margin: 0 auto; /* Center content */
+}
+
+/* Reuse section title styling */
+.my-borrows-content .section-title { }
+
+.borrowed-books-list {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust min width for slightly larger cards */
+gap: 30px; /* Space between cards */
+}
+
+/* Reuse card style with modifications */
+.borrowed-book-item.card {
+display: flex;
+gap: 20px; /* Space between image and info */
+padding: 20px;
+align-items: flex-start; /* Align items to the top */
+background-color: var(--card-bg);
+border-radius: var(--border-radius);
+box-shadow: var(--card-shadow);
+border: 1px solid var(--border-color);
+transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+.borrowed-book-item.card:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+
+.borrowed-book-cover,
+.borrowed-book-cover-placeholder {
+width: 100px; /* Fixed width */
+height: 150px; /* Maintain aspect ratio */
+object-fit: cover;
+border-radius: 4px;
+flex-shrink: 0; /* Prevent shrinking */
+background-color: #e0e0e0; /* Placeholder background */
+}
+.borrowed-book-cover-placeholder {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 0.8rem;
+ color: var(--text-color-light);
+ text-align: center;
+}
+.borrowed-book-cover.image-error { /* Style if image fails */
+  object-fit: contain;
+  background-color: #eee;
+}
+
+.borrowed-book-info {
+display: flex;
+flex-direction: column;
+justify-content: space-between; /* Pushes button down */
+flex-grow: 1;
+min-height: 150px; /* Match image height */
+}
+
+.borrowed-book-info h3 {
+font-size: 1.1rem;
+font-weight: 600;
+margin: 0 0 5px 0;
+line-height: 1.3;
+}
+.borrowed-book-info p {
+font-size: 0.9rem;
+color: var(--text-color-light);
+margin: 0 0 8px 0;
+}
+.borrowed-book-info .due-date {
+font-weight: 500;
+color: var(--error-color);
+margin-top: 10px; /* Add space above due date */
+margin-bottom: 12px; /* Space below due date */
+font-size: 0.95rem;
+}
+
+.return-button-small {
+ /* Inherits base .button */
+ background-color: var(--success-color);
+ color: white;
+ padding: 7px 18px; /* Slightly larger padding */
+ font-size: 0.9rem;
+ align-self: flex-start; /* Align button left */
+ /* Override potential margins from base button if needed */
+ margin-top: auto; /* Push to bottom if flex container allows */
+}
+.return-button-small:hover:not(:disabled) {
+background-color: #218838;
+}
+.return-button-small:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+}
+
+
+/* Reuse home footer styling */
+.my-borrows-page .home-footer { }
+
+/* --- Responsive Adjustments for My Borrows --- */
+@media (max-width: 768px) {
+  .borrowed-books-list {
+    grid-template-columns: 1fr; /* Single column on smaller screens */
+ }
+ .borrowed-book-item.card {
+     flex-direction: column; /* Stack image and info */
+     align-items: center; /* Center items */
+     text-align: center;
+ }
+ .borrowed-book-info {
+     align-items: center;
+     text-align: center;
+     min-height: auto; /* Reset min-height */
+     margin-top: 15px; /* Add space after image */
+ }
+  .borrowed-book-info .due-date {
+    margin-top: 10px;
+  }
+  .return-button-small {
+      align-self: center; /* Center button */
+      margin-top: 15px; /* Add space above button */
+  }
+}
+
+/* Add a class for visually disabled buttons that aren't actually disabled */
+.disabled-visual {
+opacity: 0.6;
+cursor: not-allowed;
+background: #ccc !important;
+color: #777 !important;
+border-color: #ccc !important;
+transform: none !important;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Add a class for styling images that failed to load */
+.image-error {
+  object-fit: contain; /* Or 'scale-down' */
+  background-color: #f0f0f0; /* Light background for failed images */
+  padding: 10px; /* Add some padding so text isn't right at edge */
+}
+
+
+/* --- END --- */
 
 /* ======================================================== */
-/* --- END: Styles specific to Book Detail Page --- */
+/* --- END: Book Detail Page Styles & Modal --- */
 /* ======================================================== */

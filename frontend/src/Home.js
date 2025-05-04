@@ -1,7 +1,11 @@
 // frontend/src/Home.js
 import React, { useState, useEffect } from 'react';
-import API from './api'; // Your configured axios instance
-import { Link } from 'react-router-dom'; // Import Link
+import * as api from './api'; // Use named import
+import { Link } from 'react-router-dom';
+import './styles.css'; // Ensure styles are imported
+
+// Simple Spinner component (can be shared if needed)
+const Spinner = () => <div className="spinner"></div>;
 
 export default function Home({ user, onLogout }) {
   const [books, setBooks] = useState([]);
@@ -11,16 +15,16 @@ export default function Home({ user, onLogout }) {
   useEffect(() => {
     const fetchBooks = async () => {
       setIsLoading(true);
-      setError(null); // Reset error on new fetch
-      console.log("Fetching books from /api/books");
+      setError(null);
+      console.log("Fetching available books from /api/books");
       try {
-        const response = await API.get('/books'); // Calls http://localhost:5000/api/books
-        console.log("Books fetched:", response.data);
-        setBooks(response.data || []); // Ensure books is always an array
+        const response = await api.fetchBooks();
+        console.log("Books fetched:", response.data?.length);
+        setBooks(response.data || []);
       } catch (err) {
-        console.error("Error fetching books:", err.response?.data || err.message);
-        setError('Failed to load books. Please try again later.');
-        setBooks([]); // Clear books on error
+        console.error("Error fetching books:", err);
+        setError(err.response?.data?.message || 'Failed to load books. Please try again later.');
+        setBooks([]);
       } finally {
         setIsLoading(false);
       }
@@ -29,65 +33,74 @@ export default function Home({ user, onLogout }) {
     fetchBooks();
   }, []); // Empty dependency array means this runs once on mount
 
+  // Function to handle image loading errors for book covers
+  const handleImageError = (e) => {
+    e.target.onerror = null; // Prevent infinite loop if placeholder fails
+    e.target.src = 'https://via.placeholder.com/150x220?text=No+Image'; // Fallback placeholder
+    e.target.classList.add('image-error'); // Optional: add class for styling
+  };
+
   return (
     <div className="home-page-container">
       {/* --- Header Section --- */}
       <header className="home-header">
         <div className="welcome-user">
             {user?.photo ? (
-              <img src={user.photo} alt="User Avatar" className="header-avatar" />
+              <img src={user.photo} alt={user.name || 'User'} className="header-avatar" />
             ) : (
               <div className="header-avatar-placeholder">{user?.name ? user.name.charAt(0).toUpperCase() : '?'}</div>
             )}
             <h1 className="header-title">Welcome, {user?.name || 'Reader'}!</h1>
         </div>
-        <button onClick={onLogout} className="logout-button header-logout">Log Out</button>
+        {/* --- Navigation Links --- */}
+        <nav className="header-nav">
+            {/* Link to My Borrows page */}
+            <Link to="/my-borrows" className="button secondary-button header-nav-button">My Borrows</Link>
+            <button onClick={onLogout} className="button logout-button header-logout">Log Out</button>
+        </nav>
       </header>
 
       {/* --- Main Content Area --- */}
       <main className="book-display-area">
         <h2 className="section-title">Discover Your Next Read</h2>
 
-        {/* --- Loading State --- */}
-        {isLoading && <p className="loading-text">Loading books...</p>}
-
-        {/* --- Error State --- */}
+        {isLoading && (
+          <div className="loading-container"> <Spinner /><p className="loading-text">Loading books...</p></div>
+        )}
         {error && <p className="error-text">{error}</p>}
 
-        {/* --- Book Grid --- */}
         {!isLoading && !error && books.length > 0 && (
           <div className="book-grid">
             {books.map((book) => (
-             // Wrap the entire card content in a Link
-             <Link key={book._id} to={`/books/${book._id}`} className="book-card-link">
-               <div className="book-card">
+             <Link key={book._id} to={`/books/${book._id}`} className="book-card-link" aria-label={`View details for ${book.title}`}>
+               <article className="book-card"> {/* Use article for semantic meaning */}
                   <img
-                    src={book.image || 'https://via.placeholder.com/150x220?text=No+Image'} // Use placeholder if image missing
+                    src={book.image || 'https://via.placeholder.com/150x220?text=No+Image'}
                     alt={`${book.title} cover`}
                     className="book-cover"
-                    onError={(e) => { e.target.onerror = null; e.target.src='https://via.placeholder.com/150x220?text=No+Image'; }} // Handle broken image links
+                    onError={handleImageError} // Add error handler
+                    loading="lazy" // Add lazy loading for images
                   />
                   <div className="book-info">
                     <h3 className="book-title">{book.title}</h3>
                     <p className="book-author">by {book.author}</p>
-                    {/* Add more info like genre or rating if needed */}
                   </div>
-               </div>
+               </article>
              </Link>
             ))}
           </div>
         )}
 
-        {/* --- No Books Found State --- */}
+        {/* Message when no books are available or found */}
         {!isLoading && !error && books.length === 0 && (
-          <p className="info-text">No books found in the library yet.</p>
+          <p className="info-text">No books are currently available in the library.</p>
         )}
       </main>
 
-       {/* Optional Footer */}
-       {/* <footer className="home-footer"> */}
-       {/*   <p>© {new Date().getFullYear()} Your Library</p> */}
-       {/* </footer> */}
+       {/* --- Footer --- */}
+       <footer className="home-footer">
+         <p>© {new Date().getFullYear()} Library Management System</p>
+       </footer>
     </div>
   );
 }

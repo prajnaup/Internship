@@ -1,30 +1,28 @@
 // backend/routes/books.js
 const express = require('express');
 const router = express.Router();
-const Book = require('../models/Book'); // Adjust path if needed
+const Book = require('../models/Book');
 
-// GET /api/books - Fetch all books (or a subset for pagination later)
+// GET /api/books - Fetch **available** books for homepage
 router.get('/', async (req, res) => {
-  console.log("GET /api/books request received");
+  console.log("GET /api/books request received (fetching available books)");
   try {
-    // Fetch books, maybe limit the number initially
-    const books = await Book.find({})
-                           .select('title author image _id') // Select only needed fields for home display
-                           .limit(20); // Example: Limit to 20 books for performance
+    const books = await Book.find({ availableCopies: { $gt: 0 } }) // <-- Filter here
+                           .select('title author image _id availableCopies') // Include availableCopies if needed for display logic, or just rely on filter
+                           .limit(20); // Example limit
 
-    console.log(`Found ${books.length} books`);
+    console.log(`Found ${books.length} available books for homepage`);
     res.status(200).json(books);
   } catch (err) {
-    console.error('Error fetching books:', err);
+    console.error('Error fetching available books:', err);
     res.status(500).json({ message: 'Server error while fetching books' });
   }
 });
 
-// Optional: GET /api/books/:id - Fetch a single book's details (for later use)
+// GET /api/books/:id - Fetch a single book's details (remains unchanged, should show even if unavailable)
 router.get('/:id', async (req, res) => {
     try {
         const book = await Book.findById(req.params.id);
-        // Add .populate('reviews.userId', 'name') if you need reviewer names
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
@@ -37,6 +35,5 @@ router.get('/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 });
-
 
 module.exports = router;
