@@ -30,11 +30,13 @@ export default function Home({ user, onLogout }) {
             ...book,
             // Ensure bookid exists and is treated as a string for consistent searching
             // Handle potential null/undefined/number cases
-            bookid: book.bookid ? String(book.bookid).trim() : ''
+            bookid: book.bookid ? String(book.bookid).trim() : '',
+            // Ensure genre is also handled if needed (though usually a simple string)
+            genre: book.genre ? String(book.genre).trim() : ''
           };
         });
 
-        console.log("Processed books with ID:", booksWithProcessedId); // Log processed data
+        console.log("Processed books with ID and Genre:", booksWithProcessedId); // Log processed data
         setBooks(booksWithProcessedId);
 
       } catch (err) {
@@ -72,17 +74,18 @@ export default function Home({ user, onLogout }) {
   // --- Filtering logic re-verified ---
   const filteredBooks = books.filter((book) => {
     const term = activeSearchTerm.toLowerCase();
-    if (!term) return true;
+    if (!term) return true; // Show all if search is empty
 
     // Check each field, ensuring it exists and converting to lowercase
     const titleMatch = book.title && book.title.toLowerCase().includes(term);
     const authorMatch = book.author && book.author.toLowerCase().includes(term);
+    // *** GENRE MATCH IS ALREADY HERE ***
     const genreMatch = book.genre && book.genre.toLowerCase().includes(term);
-    // ** Check bookid (which should now always be a string from useEffect) **
+    // Check bookid (which should now always be a string from useEffect)
     const bookidMatch = book.bookid && book.bookid.toLowerCase().includes(term);
 
     // Uncomment for debugging specific non-matches:
-    // console.log(`Filtering: ${book.title} (ID: ${book.bookid}) | Term: "${term}" | Matches: title=${titleMatch}, author=${authorMatch}, genre=${genreMatch}, bookid=${bookidMatch}`);
+    // console.log(`Filtering: ${book.title} (ID: ${book.bookid}, Genre: ${book.genre}) | Term: "${term}" | Matches: title=${titleMatch}, author=${authorMatch}, genre=${genreMatch}, bookid=${bookidMatch}`);
 
     return titleMatch || authorMatch || genreMatch || bookidMatch;
   });
@@ -151,6 +154,8 @@ export default function Home({ user, onLogout }) {
                   <div className="book-info">
                     <h3 className="book-title">{book.title}</h3>
                     <p className="book-author">by {book.author}</p>
+                    {/* Optionally display genre on card if needed */}
+                    {/* <p className="book-genre-small">{book.genre}</p> */}
                   </div>
                </article>
              </Link>

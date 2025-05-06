@@ -7,10 +7,10 @@ const Book = require('../models/Book');
 router.get('/', async (req, res) => {
   console.log("GET /api/books request received (fetching available books)");
   try {
-    // Fetch including the bookid field explicitly
+    // Fetch including the bookid field AND genre explicitly
     const books = await Book.find({ availableCopies: { $gt: 0 } })
-                           // Ensure bookid is selected
-                           .select('title author image _id availableCopies bookid')
+                           // *** ADDED 'genre' HERE ***
+                           .select('title author genre image _id availableCopies bookid')
                            .limit(20) // Example limit
                            .lean(); // Use lean for plain JS objects
 
@@ -25,7 +25,7 @@ router.get('/', async (req, res) => {
 // GET /api/books/:id - Fetch a single book's details (remains unchanged)
 router.get('/:id', async (req, res) => {
     try {
-        // Fetching full document here, so bookid will be included
+        // Fetching full document here, so bookid and genre will be included
         const book = await Book.findById(req.params.id);
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });

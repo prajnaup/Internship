@@ -54,7 +54,8 @@ export const completeProfile = (payload) => API.post('/auth/complete-profile', p
 export const getBorrowStatus = (bookMongoId, userId) => API.get(`/borrow/status/${bookMongoId}/${userId}`);
 export const borrowBook = (bookMongoId, payload) => API.post(`/borrow/${bookMongoId}`, payload);
 export const returnBook = (recordId, payload) => API.post(`/borrow/return/${recordId}`, payload);
-export const fetchMyBorrows = (userId) => API.get(`/borrow/user/${userId}/active`); // For MyBorrows page
+export const fetchMyBorrows = (userId) => API.get(`/borrow/user/${userId}/active`); // For Active Borrows
+export const fetchMyHistory = (userId) => API.get(`/borrow/user/${userId}/history`); // *** NEW: For Borrow History ***
 
 // --- REMOVED THE DEFAULT EXPORT ---
 // export default API;

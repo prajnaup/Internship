@@ -97,7 +97,7 @@ router.get('/user/:userId/count', async (req, res) => {
     }
 });
 
-// --- GET Active Borrows for a User (NEW for MyBorrows page) ---
+// --- GET Active Borrows for a User (for MyBorrows page) ---
 router.get('/user/:userId/active', async (req, res) => {
     const { userId } = req.params;
     console.log(`GET /user/${userId}/active - Fetching active borrows`);
@@ -112,7 +112,7 @@ router.get('/user/:userId/active', async (req, res) => {
             status: 'borrowed'
         })
         .populate('bookRef', 'title author image') // Populate book details
-        .sort({ borrowDate: -1 }) // Optional: Sort by borrow date
+        .sort({ returnDate: 1 }) // Sort by due date (earliest first)
         .lean(); // Use lean for read-only performance
 
         console.log(`Found ${activeBorrows.length} active borrows for user ${userId}`);
@@ -121,6 +121,33 @@ router.get('/user/:userId/active', async (req, res) => {
     } catch (err) {
         console.error('Error fetching active borrows:', err);
         res.status(500).json({ message: 'Server error fetching active borrows' });
+    }
+});
+
+// --- GET Borrow History for a User (NEW for MyBorrows page) ---
+router.get('/user/:userId/history', async (req, res) => {
+    const { userId } = req.params;
+    console.log(`GET /user/${userId}/history - Fetching borrow history`);
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        return res.status(400).json({ message: 'Invalid User ID format' });
+    }
+
+    try {
+        const borrowHistory = await BorrowingRecord.find({
+            userId: userId,
+            status: 'returned' // Fetch only returned records
+        })
+        .populate('bookRef', 'title author image') // Populate book details
+        .sort({ actualReturnDate: -1 }) // Sort by actual return date (most recent first)
+        .lean(); // Use lean for read-only performance
+
+        console.log(`Found ${borrowHistory.length} historical records for user ${userId}`);
+        res.status(200).json(borrowHistory);
+
+    } catch (err) {
+        console.error('Error fetching borrow history:', err);
+        res.status(500).json({ message: 'Server error fetching borrow history' });
     }
 });
 
@@ -175,6 +202,7 @@ router.post('/:bookMongoId', async (req, res) => {
         // 3. Check Borrow Limit *after* securing a copy
         // Pass session to helper for transactional read
         const currentBorrows = await getUserBorrowCount(userId, session);
+        // Use >= because the count *includes* the book we just secured
         if (currentBorrows >= MAX_BORROW_LIMIT) {
              // Rollback the decrement since the user hit the limit
              await Book.findByIdAndUpdate(bookMongoId, { $inc: { availableCopies: 1 } }, { session });
@@ -210,6 +238,11 @@ router.post('/:bookMongoId', async (req, res) => {
 
         // Specific error handling
         if (err.code === 11000) { // Duplicate key error (likely from the unique index)
+            // Rollback the decrement if the save failed due to duplicate
+            // Need to check if updatedBook was valid before attempting rollback
+            if (mongoose.Types.ObjectId.isValid(bookMongoId)) {
+                await Book.findByIdAndUpdate(bookMongoId, { $inc: { availableCopies: 1 } }, { session: await mongoose.startSession() }); // Use a new session for rollback if original aborted
+            }
             return res.status(409).json({ message: 'You have already borrowed this book.' });
         }
         if (err.name === 'ValidationError') {
@@ -222,6 +255,9 @@ router.post('/:bookMongoId', async (req, res) => {
         res.status(500).json({ message: err.message || 'Server error during borrowing process' });
     } finally {
          // Ensure the session always ends
+         if (session.inTransaction()) {
+            await session.abortTransaction();
+         }
         session.endSession();
     }
 });

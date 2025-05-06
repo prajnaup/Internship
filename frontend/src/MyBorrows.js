@@ -1,6 +1,6 @@
 // frontend/src/MyBorrows.js
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Removed useNavigate as it wasn't used
 import Webcam from 'react-webcam';
 import * as api from './api';
 import './styles.css'; // Reuse global styles
@@ -10,11 +10,24 @@ const Spinner = () => <div className="spinner"></div>;
 const REQUIRED_PHOTOS = 4;
 const MAX_BORROW_LIMIT = 3;
 
+// Helper function to format dates
+const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric', month: 'short', day: 'numeric'
+        });
+    } catch (e) {
+        return 'Invalid Date';
+    }
+};
+
 export default function MyBorrows({ user, onLogout }) {
     const [borrowedRecords, setBorrowedRecords] = useState([]);
+    const [historicalRecords, setHistoricalRecords] = useState([]); // <-- State for history
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
+    // const navigate = useNavigate(); // Removed as it wasn't used
 
     // --- State for the Return Modal ---
     const [showReturnModal, setShowReturnModal] = useState(false);
@@ -28,8 +41,8 @@ export default function MyBorrows({ user, onLogout }) {
     });
     const returnWebcamRef = useRef(null);
 
-    // --- Fetch Borrowed Records ---
-    const loadBorrows = useCallback(async () => {
+    // --- Fetch Borrowed Records and History ---
+    const loadData = useCallback(async () => {
         if (!user?._id) {
             setError("User not identified. Please log in again.");
             setIsLoading(false);
@@ -37,26 +50,41 @@ export default function MyBorrows({ user, onLogout }) {
         }
         setIsLoading(true);
         setError(null);
+        setBorrowedRecords([]); // Clear previous data
+        setHistoricalRecords([]); // Clear previous data
         try {
-            const { data } = await api.fetchMyBorrows(user._id);
-            console.log("Fetched borrowed records:", data?.length);
-            const sortedData = (data || []).sort((a, b) => new Date(a.returnDate) - new Date(b.returnDate));
-            setBorrowedRecords(sortedData);
+            // Fetch both active and historical records concurrently
+            const [activeRes, historyRes] = await Promise.all([
+                api.fetchMyBorrows(user._id),
+                api.fetchMyHistory(user._id) // New API call
+            ]);
+
+            // Process active borrows
+            console.log("Fetched active records:", activeRes.data?.length);
+            const sortedActiveData = (activeRes.data || []).sort((a, b) => new Date(a.returnDate) - new Date(b.returnDate));
+            setBorrowedRecords(sortedActiveData);
+
+            // Process historical borrows
+            console.log("Fetched historical records:", historyRes.data?.length);
+            // Already sorted by backend (actualReturnDate desc)
+            setHistoricalRecords(historyRes.data || []);
+
         } catch (err) {
-            console.error("Error fetching borrowed books:", err);
-            setError(err.response?.data?.message || "Failed to load borrowed books.");
-            setBorrowedRecords([]);
+            console.error("Error fetching borrowed books/history:", err);
+            setError(err.response?.data?.message || "Failed to load borrowed books or history.");
+            setBorrowedRecords([]); // Ensure clear on error
+            setHistoricalRecords([]); // Ensure clear on error
         } finally {
             setIsLoading(false);
         }
     }, [user?._id]);
 
     useEffect(() => {
-        loadBorrows();
-    }, [loadBorrows]);
+        loadData();
+    }, [loadData]);
 
 
-    // --- Return Modal Logic ---
+    // --- Return Modal Logic (Unchanged from previous version) ---
     const openReturnModal = (record) => {
         console.log("Opening return modal for record:", record._id, "Book:", record.bookRef?.title);
         if (!record || !record._id || !record.bookRef) {
@@ -143,7 +171,7 @@ export default function MyBorrows({ user, onLogout }) {
              await api.returnBook(currentRecordForReturn._id, payload);
              console.log("Book returned successfully via MyBorrows page for record:", currentRecordForReturn._id);
              closeReturnModal();
-             await loadBorrows();
+             await loadData(); // Reload both active and history
 
         } catch (err) {
              console.error("Error submitting return:", err);
@@ -151,13 +179,13 @@ export default function MyBorrows({ user, onLogout }) {
              setReturnInteractionState(prev => ({
                  ...prev,
                  submitError: errorMsg.trim(),
-                 processStage: 'reviewing',
+                 processStage: 'reviewing', // Go back to review stage on error
                  isSubmitting: false
              }));
         }
     };
 
-    // --- Render Return Modal ---
+    // --- Render Return Modal (Unchanged from previous version) ---
     const renderReturnModalContent = () => {
          const { processStage, capturedImages, cameraError, submitError, isSubmitting } = returnInteractionState;
          const photosTaken = capturedImages.filter(img => img !== null).length;
@@ -173,7 +201,6 @@ export default function MyBorrows({ user, onLogout }) {
                  </div>
              );
         }
-
 
         return (
              <div className="modal-overlay" onClick={closeReturnModal}>
@@ -216,7 +243,7 @@ export default function MyBorrows({ user, onLogout }) {
                                 <div key={index} className="thumbnail-slot">
                                     <p>Photo {index + 1}</p>
                                     {imgSrc ? (<img src={imgSrc} alt={`Return Preview ${index + 1}`} className="thumbnail-preview" />)
-                                            : (<div className="thumbnail-placeholder">Empty</div>) /* <-- UPDATED HERE */
+                                            : (<div className="thumbnail-placeholder">Empty</div>)
                                     }
                                     {imgSrc && processStage !== 'submitting' && (
                                         <button onClick={() => handleReturnRetake(index)} className="button tertiary-button retake-button" disabled={isSubmitting}>Retake</button>
@@ -264,9 +291,10 @@ export default function MyBorrows({ user, onLogout }) {
     // --- Main Component Render ---
     return (
         <div className="my-borrows-page">
-            <header className="home-header">
+            {/* *** HEADER UPDATED: Removed image next to title *** */}
+            <header className="home-header my-borrows-header"> {/* Added specific class for potential overrides */}
                 <div className="welcome-user">
-                    {user?.photo ? (<img src={user.photo} alt="" className="header-avatar" />) : (<div className="header-avatar-placeholder">{user?.name ? user.name.charAt(0).toUpperCase() : '?'}</div>)}
+                    {/* Removed user photo from here */}
                     <h1 className="header-title">{user?.name || 'Reader'}'s Borrows</h1>
                 </div>
                 <nav className="header-nav">
@@ -277,9 +305,15 @@ export default function MyBorrows({ user, onLogout }) {
 
             <main className="my-borrows-content">
                 <h2 className="section-title">Currently Borrowed Books ({borrowedRecords.length}/{MAX_BORROW_LIMIT})</h2>
+
+                {/* Loading/Error/Empty State for Active Borrows */}
                 {isLoading && <div className="loading-container"><Spinner /><p>Loading borrowed books...</p></div>}
-                {error && <p className="error-text">{error}</p>}
-                {!isLoading && !error && borrowedRecords.length === 0 && (<p className="info-text">You haven't borrowed any books yet. <Link to="/">Browse the library</Link> to find your next read!</p>)}
+                {error && !isLoading && <p className="error-text">{error}</p>}
+                {!isLoading && !error && borrowedRecords.length === 0 && (
+                    <p className="info-text">You haven't borrowed any books yet. <Link to="/">Browse the library</Link> to find your next read!</p>
+                )}
+
+                {/* Active Borrows List */}
                 {!isLoading && !error && borrowedRecords.length > 0 && (
                     <div className="borrowed-books-list">
                         {borrowedRecords.map((record) => (
@@ -289,17 +323,48 @@ export default function MyBorrows({ user, onLogout }) {
                                 <div className="borrowed-book-info">
                                     <h3>{record.bookRef?.title || 'Book title missing'}</h3>
                                     <p>by {record.bookRef?.author || 'Unknown Author'}</p>
-                                    <p className="due-date">Due: {new Date(record.returnDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-                                    <button onClick={() => openReturnModal(record)} className="button return-button-small" disabled={returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id}>
-                                        {returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id ? 'Returning...' : 'Return Book'}
+                                    <p className="due-date">Due: {formatDate(record.returnDate)}</p>
+                                    <button onClick={() => openReturnModal(record)} className="button return-button-small primary-button" disabled={returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id}>
+                                        {returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id ? <Spinner /> : 'Return Book'}
                                     </button>
                                 </div>
                              </article>
                         ))}
                     </div>
                 )}
+
+                {/* --- Borrow History Section --- */}
+                 <div className="borrow-history-section">
+                     <h2 className="section-title history-title">Borrow History</h2>
+                     {!isLoading && !error && historicalRecords.length === 0 && (
+                         <p className="info-text">No past borrowing records found.</p>
+                     )}
+                     {!isLoading && !error && historicalRecords.length > 0 && (
+                         <div className="borrowed-books-list history-list"> {/* Reuse list style or create new */}
+                             {historicalRecords.map((record) => (
+                                 <article key={record._id} className="borrowed-book-item history-item card"> {/* Reuse item style or create new */}
+                                     {record.bookRef?.image ? (<img src={record.bookRef.image} alt={`${record.bookRef.title || 'Book'} cover`} className="borrowed-book-cover" onError={handleImageError} loading="lazy"/>)
+                                                      : (<div className="borrowed-book-cover-placeholder">No Image</div>)}
+                                     <div className="borrowed-book-info history-info">
+                                         <h3>{record.bookRef?.title || 'Book title missing'}</h3>
+                                         <p>by {record.bookRef?.author || 'Unknown Author'}</p>
+                                         <div className="history-dates">
+                                             <p>Borrowed: {formatDate(record.borrowDate)}</p>
+                                             <p>Returned: {formatDate(record.actualReturnDate)}</p>
+                                         </div>
+                                         {/* No action button needed for history */}
+                                     </div>
+                                 </article>
+                             ))}
+                         </div>
+                     )}
+                 </div>
+
             </main>
+
+            {/* Render the Return Modal */}
             {showReturnModal && currentRecordForReturn && renderReturnModalContent()}
+
             <footer className="home-footer"><p>© {new Date().getFullYear()} Library Management System</p></footer>
         </div>
     );
