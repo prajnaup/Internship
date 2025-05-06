@@ -1,15 +1,14 @@
 // frontend/src/MyBorrows.js
-// *** NEW FILE ***
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import * as api from './api';
 import './styles.css'; // Reuse global styles
 
-// Shared Components (consider moving to a separate file if used more widely)
+// Shared Components
 const Spinner = () => <div className="spinner"></div>;
-const REQUIRED_PHOTOS = 4; // Keep consistent
-const MAX_BORROW_LIMIT = 3; // Keep consistent
+const REQUIRED_PHOTOS = 4;
+const MAX_BORROW_LIMIT = 3;
 
 export default function MyBorrows({ user, onLogout }) {
     const [borrowedRecords, setBorrowedRecords] = useState([]);
@@ -19,7 +18,7 @@ export default function MyBorrows({ user, onLogout }) {
 
     // --- State for the Return Modal ---
     const [showReturnModal, setShowReturnModal] = useState(false);
-    const [currentRecordForReturn, setCurrentRecordForReturn] = useState(null); // Store the whole record
+    const [currentRecordForReturn, setCurrentRecordForReturn] = useState(null);
     const [returnInteractionState, setReturnInteractionState] = useState({
         processStage: 'capturing',// capturing, reviewing, submitting
         capturedImages: Array(REQUIRED_PHOTOS).fill(null),
@@ -41,7 +40,6 @@ export default function MyBorrows({ user, onLogout }) {
         try {
             const { data } = await api.fetchMyBorrows(user._id);
             console.log("Fetched borrowed records:", data?.length);
-            // Sort records, e.g., by due date ascending
             const sortedData = (data || []).sort((a, b) => new Date(a.returnDate) - new Date(b.returnDate));
             setBorrowedRecords(sortedData);
         } catch (err) {
@@ -67,7 +65,6 @@ export default function MyBorrows({ user, onLogout }) {
              return;
          }
         setCurrentRecordForReturn(record);
-        // Reset modal state specifically for this return action
         setReturnInteractionState({
              processStage: 'capturing',
              capturedImages: Array(REQUIRED_PHOTOS).fill(null),
@@ -80,8 +77,7 @@ export default function MyBorrows({ user, onLogout }) {
 
     const closeReturnModal = () => {
         setShowReturnModal(false);
-        setCurrentRecordForReturn(null); // Clear the record being processed
-         // Reset state fully on close
+        setCurrentRecordForReturn(null);
          setReturnInteractionState({
              processStage: 'capturing',
              capturedImages: Array(REQUIRED_PHOTOS).fill(null),
@@ -109,10 +105,10 @@ export default function MyBorrows({ user, onLogout }) {
              setReturnInteractionState(prev => ({
                  ...prev,
                  capturedImages: updatedImages,
-                 cameraError: null // Clear error on successful capture
+                 cameraError: null
              }));
         }
-    }, [returnInteractionState.capturedImages]); // Depend only on images array
+    }, [returnInteractionState.capturedImages]);
 
      const handleReturnRetake = (index) => {
         const updatedImages = [...returnInteractionState.capturedImages];
@@ -120,8 +116,8 @@ export default function MyBorrows({ user, onLogout }) {
          setReturnInteractionState(prev => ({
              ...prev,
              capturedImages: updatedImages,
-             processStage: 'capturing', // Go back to capturing stage
-             submitError: null // Clear submission error on retake
+             processStage: 'capturing',
+             submitError: null
          }));
     };
 
@@ -147,7 +143,7 @@ export default function MyBorrows({ user, onLogout }) {
              await api.returnBook(currentRecordForReturn._id, payload);
              console.log("Book returned successfully via MyBorrows page for record:", currentRecordForReturn._id);
              closeReturnModal();
-             await loadBorrows(); // Refresh the list after successful return
+             await loadBorrows();
 
         } catch (err) {
              console.error("Error submitting return:", err);
@@ -155,22 +151,19 @@ export default function MyBorrows({ user, onLogout }) {
              setReturnInteractionState(prev => ({
                  ...prev,
                  submitError: errorMsg.trim(),
-                 processStage: 'reviewing', // Allow retry
+                 processStage: 'reviewing',
                  isSubmitting: false
              }));
         }
-        // No need to set isSubmitting false on success, modal closes
     };
 
     // --- Render Return Modal ---
     const renderReturnModalContent = () => {
-        // Use state specific to the return modal interaction
          const { processStage, capturedImages, cameraError, submitError, isSubmitting } = returnInteractionState;
          const photosTaken = capturedImages.filter(img => img !== null).length;
          const allPhotosTaken = photosTaken === REQUIRED_PHOTOS;
 
         if (!currentRecordForReturn || !currentRecordForReturn.bookRef) {
-            // Handle case where record data might be missing (should not happen if opened correctly)
             return (
                  <div className="modal-overlay" onClick={closeReturnModal}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -186,12 +179,10 @@ export default function MyBorrows({ user, onLogout }) {
              <div className="modal-overlay" onClick={closeReturnModal}>
                  <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                      <div className="modal-header">
-                         {/* Include book title in modal header */}
                          <h2>Return: {currentRecordForReturn.bookRef.title} ({photosTaken}/{REQUIRED_PHOTOS})</h2>
                          <button onClick={closeReturnModal} className="modal-close-button" aria-label="Close modal">×</button>
                      </div>
                      <div className="modal-body">
-                          {/* --- Webcam and Capture Button --- */}
                          {processStage === 'capturing' && (
                             <div className="webcam-section">
                                  <div className="webcam-container">
@@ -212,12 +203,11 @@ export default function MyBorrows({ user, onLogout }) {
                                      disabled={isSubmitting || !!cameraError || allPhotosTaken}
                                      aria-label={allPhotosTaken ? "All photos taken" : `Capture photo ${photosTaken + 1} of ${REQUIRED_PHOTOS}`}
                                 >
-                                    {allPhotosTaken ? "All Photos Taken" : `Capture Photo ${photosTaken + 1}`}
+                                    {allPhotosTaken ? "All Photos Taken" : `Capture Photo`}
                                 </button>
                             </div>
                         )}
 
-                         {/* --- Thumbnails --- */}
                          <p className="thumbnail-instruction">
                             {allPhotosTaken || processStage === 'reviewing' ? 'Review photos before confirming return.' : `Requires ${REQUIRED_PHOTOS} photos for return.`}
                         </p>
@@ -225,11 +215,9 @@ export default function MyBorrows({ user, onLogout }) {
                              {capturedImages.map((imgSrc, index) => (
                                 <div key={index} className="thumbnail-slot">
                                     <p>Photo {index + 1}</p>
-                                    {imgSrc ? (
-                                        <img src={imgSrc} alt={`Return Preview ${index + 1}`} className="thumbnail-preview" />
-                                    ) : (
-                                        <div className="thumbnail-placeholder">Empty Slot</div>
-                                    )}
+                                    {imgSrc ? (<img src={imgSrc} alt={`Return Preview ${index + 1}`} className="thumbnail-preview" />)
+                                            : (<div className="thumbnail-placeholder">Empty</div>) /* <-- UPDATED HERE */
+                                    }
                                     {imgSrc && processStage !== 'submitting' && (
                                         <button onClick={() => handleReturnRetake(index)} className="button tertiary-button retake-button" disabled={isSubmitting}>Retake</button>
                                     )}
@@ -239,7 +227,7 @@ export default function MyBorrows({ user, onLogout }) {
                          {submitError && <p className="error-text submit-error">{submitError}</p>}
                      </div>
 
-                     {/* --- Footer Actions --- */}
+                     {/* Footer Actions */}
                      <div className="modal-footer">
                           {processStage === 'capturing' && !allPhotosTaken && (
                              <button onClick={closeReturnModal} className="button secondary-button">Cancel Return</button>
@@ -276,14 +264,9 @@ export default function MyBorrows({ user, onLogout }) {
     // --- Main Component Render ---
     return (
         <div className="my-borrows-page">
-            {/* Header similar to Home */}
             <header className="home-header">
                 <div className="welcome-user">
-                    {user?.photo ? (
-                        <img src={user.photo} alt="" className="header-avatar" />
-                    ) : (
-                        <div className="header-avatar-placeholder">{user?.name ? user.name.charAt(0).toUpperCase() : '?'}</div>
-                    )}
+                    {user?.photo ? (<img src={user.photo} alt="" className="header-avatar" />) : (<div className="header-avatar-placeholder">{user?.name ? user.name.charAt(0).toUpperCase() : '?'}</div>)}
                     <h1 className="header-title">{user?.name || 'Reader'}'s Borrows</h1>
                 </div>
                 <nav className="header-nav">
@@ -294,41 +277,20 @@ export default function MyBorrows({ user, onLogout }) {
 
             <main className="my-borrows-content">
                 <h2 className="section-title">Currently Borrowed Books ({borrowedRecords.length}/{MAX_BORROW_LIMIT})</h2>
-
                 {isLoading && <div className="loading-container"><Spinner /><p>Loading borrowed books...</p></div>}
                 {error && <p className="error-text">{error}</p>}
-
-                {!isLoading && !error && borrowedRecords.length === 0 && (
-                    <p className="info-text">You haven't borrowed any books yet. <Link to="/">Browse the library</Link> to find your next read!</p>
-                )}
-
+                {!isLoading && !error && borrowedRecords.length === 0 && (<p className="info-text">You haven't borrowed any books yet. <Link to="/">Browse the library</Link> to find your next read!</p>)}
                 {!isLoading && !error && borrowedRecords.length > 0 && (
                     <div className="borrowed-books-list">
                         {borrowedRecords.map((record) => (
-                            <article key={record._id} className="borrowed-book-item card"> {/* Use article */}
-                                {record.bookRef?.image ? (
-                                    <img
-                                        src={record.bookRef.image}
-                                        alt={`${record.bookRef.title || 'Book'} cover`}
-                                        className="borrowed-book-cover"
-                                         onError={handleImageError}
-                                         loading="lazy"
-                                    />
-                                ) : (
-                                    <div className="borrowed-book-cover-placeholder">No Image</div>
-                                )}
+                            <article key={record._id} className="borrowed-book-item card">
+                                {record.bookRef?.image ? (<img src={record.bookRef.image} alt={`${record.bookRef.title || 'Book'} cover`} className="borrowed-book-cover" onError={handleImageError} loading="lazy"/>)
+                                                      : (<div className="borrowed-book-cover-placeholder">No Image</div>)}
                                 <div className="borrowed-book-info">
                                     <h3>{record.bookRef?.title || 'Book title missing'}</h3>
                                     <p>by {record.bookRef?.author || 'Unknown Author'}</p>
-                                    <p className="due-date">
-                                        Due: {new Date(record.returnDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                                    </p>
-                                    <button
-                                        onClick={() => openReturnModal(record)}
-                                        className="button return-button-small"
-                                        // Disable if *this specific record* is currently being submitted in the modal
-                                        disabled={returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id}
-                                    >
+                                    <p className="due-date">Due: {new Date(record.returnDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                                    <button onClick={() => openReturnModal(record)} className="button return-button-small" disabled={returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id}>
                                         {returnInteractionState.isSubmitting && currentRecordForReturn?._id === record._id ? 'Returning...' : 'Return Book'}
                                     </button>
                                 </div>
@@ -337,13 +299,8 @@ export default function MyBorrows({ user, onLogout }) {
                     </div>
                 )}
             </main>
-
-            {/* Render the return modal conditionally */}
             {showReturnModal && currentRecordForReturn && renderReturnModalContent()}
-
-            <footer className="home-footer">
-                <p>© {new Date().getFullYear()} Library Management System</p>
-            </footer>
+            <footer className="home-footer"><p>© {new Date().getFullYear()} Library Management System</p></footer>
         </div>
     );
 }

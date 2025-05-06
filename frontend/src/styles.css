@@ -54,7 +54,7 @@ body {
   font-weight: 500;
 }
 
-/* --- Main Container & Card --- */
+/* --- Main Container & Card (for Sign In) --- */
 .container {
   display: flex;
   flex-direction: column;
@@ -100,10 +100,11 @@ body {
     color: var(--text-color);
 }
 
-.info-text {
+.info-text { /* General info text, used for no books found etc. */
   font-size: 0.95rem;
   color: var(--text-color-light);
-  margin-bottom: 24px;
+  margin-top: 40px; /* Add margin when it's the main content */
+  text-align: center;
 }
 
 /* --- Form Styles --- */
@@ -165,6 +166,7 @@ body {
   transition: background-color var(--transition-speed), transform var(--transition-speed), box-shadow var(--transition-speed);
   text-decoration: none; /* For potential link buttons */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1.2; /* Ensure consistent line height */
 }
 
 .button:hover:not(:disabled) { /* Added :not(:disabled) */
@@ -204,7 +206,7 @@ body {
   background-color: var(--text-color);
 }
 
-.tertiary-button {
+.tertiary-button { /* e.g., Retake button in modal */
     background-color: #6c757d; /* Grey */
     color: white;
 }
@@ -213,7 +215,6 @@ body {
 }
 
 .submit-button { /* Sign-in/Profile submit */
-  /* Inherits .button */
   background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
   color: #ffffff;
 }
@@ -222,10 +223,9 @@ body {
 }
 
 .logout-button {
-  /* Inherits .button */
   background-color: var(--error-color);
   color: #ffffff;
-  margin-top: 16px; /* Space above logout button in forms */
+  /* Removed margin-top to work better in header */
 }
 .logout-button:hover:not(:disabled) {
   background-color: #c82333; /* Darker red on hover */
@@ -242,7 +242,7 @@ body {
   border: none;
   cursor: default;
 }
-.button-container > div {
+.button-container > div { /* Target the div rendered by react-oauth */
     border-radius: var(--border-radius) !important;
     box-shadow: var(--input-shadow) !important;
     transition: box-shadow var(--transition-speed);
@@ -273,7 +273,7 @@ body {
   color: #ffffff;
 }
 
-.avatar-preview {
+.avatar-preview { /* For profile completion form */
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -284,8 +284,10 @@ body {
   border: 2px solid var(--border-color);
 }
 
+/* ======================================================== */
+/* --- START: Home Page Specific Styles --- */
+/* ======================================================== */
 
-/* --- Home Page --- */
 .home-page-container {
   display: flex;
   flex-direction: column;
@@ -313,27 +315,13 @@ body {
     gap: 15px;
 }
 
-.header-avatar, .header-avatar-placeholder {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.header-avatar-placeholder {
-    background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #ffffff;
-}
+/* Removed .header-avatar and .header-avatar-placeholder from welcome section */
 
 .header-title {
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--text-color);
-  margin: 0;
+  margin: 0; /* Ensure no extra margin */
 }
 
 .header-nav { /* Style container for right-side items */
@@ -343,11 +331,10 @@ body {
 }
 
 .header-nav-button {
-    /* Inherits .button and .secondary-button */
-    padding: 8px 18px; /* Consistent with logout button */
+    padding: 8px 18px;
     font-size: 0.9rem;
-    margin-top: 0; /* Override default button margin */
-    text-decoration: none; /* Ensure links look like buttons */
+    margin-top: 0;
+    text-decoration: none;
     color: white; /* Ensure text color for secondary */
 }
 .header-nav-button:hover {
@@ -355,7 +342,7 @@ body {
 }
 
 .header-logout {
-  margin-top: 0; /* Override base */
+  margin-top: 0;
   padding: 8px 18px;
   font-size: 0.9rem;
 }
@@ -368,20 +355,79 @@ body {
   margin: 0 auto;
 }
 
+.section-header-with-search {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 15px;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
 .section-title {
+  margin: 0;
   font-size: 1.7rem;
   font-weight: 600;
   color: var(--text-color);
-  margin-bottom: 25px;
+  flex-grow: 1;
+  min-width: 200px;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap; /* Prevent buttons wrapping below input */
+}
+
+.search-input {
+  padding: 10px 15px; /* Slightly larger padding */
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem; /* Match button text */
+  min-width: 250px;
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+}
+
+/* Specific button styles for search area */
+.search-submit-button {
+  padding: 10px 20px; /* Match input height */
+  font-size: 1rem; /* Match input text */
+  /* Inherits .button and .primary-button */
+}
+.clear-search-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    /* Inherits .button and .secondary-button */
+}
+
+
+.search-results-indicator {
+  font-size: 1rem;
+  color: var(--text-color-light);
+  margin-top: 0;
+  margin-bottom: 20px;
   text-align: left;
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 8px;
+  font-style: italic;
+}
+.search-results-indicator strong {
+    color: var(--text-color);
+    font-style: normal;
 }
 
 .book-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 25px;
+  margin-top: 0;
 }
 
 .book-card {
@@ -426,7 +472,7 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 2.4em;
+  min-height: 2.4em; /* Approx 2 lines */
 }
 
 .book-author {
@@ -451,9 +497,8 @@ body {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.home-page-container .loading-text {
-   margin-top: 40px;
-   font-size: 1.1rem;
+.home-page-container .loading-container {
+    margin-top: 40px;
 }
 .home-page-container .error-text {
   margin-top: 40px;
@@ -463,16 +508,12 @@ body {
   border: 1px solid var(--error-color);
   border-radius: var(--border-radius);
 }
-.home-page-container .info-text {
-   margin-top: 40px;
-   text-align: center;
-   color: var(--text-color-light);
-}
+/* .home-page-container .info-text is defined above */
 
 .home-footer {
     text-align: center;
     padding: 20px;
-    margin-top: auto;
+    margin-top: auto; /* Pushes footer down */
     color: var(--text-color-light);
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
@@ -481,7 +522,7 @@ body {
 }
 
 /* ======================================================== */
-/* --- START: Styles specific to Book Detail Page --- */
+/* --- START: Book Detail Page Styles --- */
 /* ======================================================== */
 
 .book-detail-page {
@@ -528,12 +569,17 @@ body {
   box-shadow: none;
 }
 
-.header-user-info {
+.header-user-info { /* Shared between detail and borrows */
     display: flex;
     align-items: center;
     gap: 10px;
 }
-.header-avatar-small {
+.header-user-info span { /* User name */
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+.header-avatar-small { /* Shared between detail and borrows */
     width: 30px;
     height: 30px;
     border-radius: 50%;
@@ -544,6 +590,16 @@ body {
      height: 30px;
      font-size: 1rem;
      /* Inherits background/color from .header-avatar-placeholder */
+}
+.header-user-info .header-logout { /* Override button base for specific placement */
+    margin-top: 0;
+    padding: 6px 15px; /* Make slightly smaller than nav buttons */
+    font-size: 0.85rem;
+}
+.header-user-info .header-nav-button { /* Specific override for this context */
+    padding: 6px 15px; /* Smaller */
+    font-size: 0.85rem;
+    margin-top: 0;
 }
 
 .book-detail-main-content {
@@ -581,7 +637,6 @@ body {
   margin-top: 20px;
   background-color: var(--text-color-light);
   color: white;
-  /* Inherits base .button styles */
 }
 .book-detail-main-content .error-container .button:hover {
   background-color: var(--text-color);
@@ -598,9 +653,9 @@ body {
   flex-direction: column;
   align-items: center;
   position: sticky;
-  top: 90px;
+  top: 90px; /* Adjust based on header height */
   align-self: start;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 120px); /* Prevent overlap with header/footer */
 }
 
 .book-detail-cover-container {
@@ -634,13 +689,15 @@ body {
 }
 
 /* Borrow/Return buttons inherit .button base styles */
-.book-detail-actions .borrow-button {
- background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
- color: #ffffff;
+.book-detail-actions .action-button {
  width: 100%;
  padding: 14px 20px;
  font-size: 1.1rem;
  font-weight: 600;
+}
+.book-detail-actions .borrow-button {
+ background: linear-gradient(45deg, var(--primary-color), var(--primary-color-dark));
+ color: #ffffff;
 }
 .book-detail-actions .borrow-button:hover:not(:disabled) {
   background: linear-gradient(45deg, var(--primary-color-dark), var(--primary-color));
@@ -649,13 +706,20 @@ body {
 .book-detail-actions .return-button {
   background-color: var(--success-color);
   color: #ffffff;
-  width: 100%;
-  padding: 14px 20px;
-  font-size: 1.1rem;
-  font-weight: 600;
 }
 .book-detail-actions .return-button:hover:not(:disabled) {
   background-color: #218838;
+}
+
+/* Style for disabled-looking buttons (unavailable, limit reached) */
+.book-detail-actions .disabled-visual {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #ccc !important;
+  color: #777 !important;
+  border-color: #ccc !important;
+  transform: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 .book-detail-info-container {
@@ -674,16 +738,21 @@ body {
 .book-detail-info-container .book-detail-author {
   font-size: 1.4rem;
   color: var(--text-color-light);
-  margin-bottom: 25px;
+  margin-bottom: 10px; /* Reduced margin */
   font-weight: 400;
 }
-.book-detail-info-container .author-link {
-  color: var(--primary-color-dark);
-  text-decoration: none;
-  font-weight: 500;
+
+/* Style for Book ID */
+.book-detail-bookid {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-bottom: 25px; /* Space before meta section */
+    margin-top: -5px; /* Pull up slightly */
+    font-weight: 400;
 }
-.book-detail-info-container .author-link:hover {
-  text-decoration: underline;
+.book-detail-bookid .bookid-label {
+    font-weight: 500;
+    color: var(--text-color);
 }
 
 .book-detail-meta {
@@ -725,16 +794,6 @@ body {
   margin-left: 5px;
 }
 
-.book-detail-borrow-status {
-  font-weight: 600;
-  color: var(--primary-color);
-  background-color: rgba(106, 17, 203, 0.1);
-  padding: 3px 8px;
-  border-radius: 4px;
-  font-size: 0.9em;
-  margin-left: 10px;
-}
-
 .borrow-limit-info {
     color: var(--text-color-light);
     font-size: 0.9em;
@@ -759,11 +818,11 @@ body {
   font-size: 1.05rem;
   line-height: 1.8;
   color: var(--text-color);
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* Preserve whitespace and line breaks */
 }
 
 /* ======================================================== */
-/* --- START: Borrow/Return Modal Styles --- */
+/* --- START: Borrow/Return/Logout Modal Styles --- */
 /* ======================================================== */
 
 .modal-overlay {
@@ -772,12 +831,12 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it's on top */
-  padding: 20px; /* Padding around the modal */
+  z-index: 1000;
+  padding: 20px;
 }
 
 .modal-content {
@@ -785,12 +844,12 @@ body {
   border-radius: var(--border-radius);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   padding: 25px 30px;
-  max-width: 700px; /* Adjust max width as needed */
+  max-width: 700px; /* Default max width */
   width: 100%;
-  max-height: 90vh; /* Limit height */
-  display: flex; /* Use flexbox for layout */
-  flex-direction: column; /* Stack header, body, footer */
-  overflow: hidden; /* Prevent content breaking out, scrolling handled internally */
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .modal-header {
@@ -800,7 +859,7 @@ body {
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 15px;
   margin-bottom: 20px;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  flex-shrink: 0;
 }
 
 .modal-header h2 {
@@ -825,58 +884,64 @@ body {
 }
 
 .modal-body {
-  flex-grow: 1; /* Allows body to take up remaining space */
-  overflow-y: auto; /* Allow ONLY the body to scroll if content exceeds modal height */
+  flex-grow: 1;
+  overflow-y: auto;
   text-align: center;
   padding-right: 10px; /* Add some padding for scrollbar */
   margin-right: -10px; /* Counteract padding visually */
 }
 
 /* --- Webcam & Capture Styles within Modal --- */
+.webcam-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
 .webcam-container {
-    position: relative; /* Needed if you ever add overlays */
-    margin: 0 auto 15px auto; /* Center horizontally, add space below */
-    max-width: 480px; /* Limit webcam preview size */
-    width: 100%; /* Take available width up to max-width */
-    border-radius: var(--border-radius);
-    overflow: hidden; /* Clip video */
-    border: 1px solid var(--border-color);
-    background-color: #f0f0f0; /* Placeholder bg */
-    aspect-ratio: 4 / 3; /* Maintain a common aspect ratio */
-    display: flex; /* Use flex for webcam centering if needed */
-    justify-content: center;
-    align-items: center;
+  position: relative;
+  margin: 0 auto 15px auto;
+  max-width: 480px;
+  width: 100%;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background-color: #f0f0f0;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .webcam-container video {
-    display: block;
-    width: 100%;
-    height: 100%; /* Fill container */
-    object-fit: cover;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* Button to capture photo - ensure it's clearly visible */
 .capture-main-button {
-    display: block; /* Make it block to take width */
-    margin: 15px auto 10px auto; /* Center and add spacing */
-    padding: 10px 25px;
-    font-size: 1.1rem;
-    /* Inherits .button .primary-button styles */
+  display: block;
+  margin-top: 15px;
+  padding: 10px 25px;
+  font-size: 1.1rem;
+  min-width: 180px;
 }
 
 .thumbnail-instruction {
-    font-size: 0.9rem;
-    color: var(--text-color-light);
-    margin-top: 10px; /* Space above thumbnails */
-    margin-bottom: 15px;
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 /* Thumbnail Grid within Modal */
 .image-thumbnails-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Always 4 columns */
-  gap: 15px; /* Slightly larger gap */
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 15px;
   margin-top: 15px;
   margin-bottom: 25px;
+  padding: 0 10px;
 }
 
 .thumbnail-slot {
@@ -884,81 +949,241 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 5px;
+  position: relative;
 }
 .thumbnail-slot p {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 3px;
-    white-space: nowrap;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-color);
+  margin-bottom: 3px;
+  white-space: nowrap;
 }
 
 .thumbnail-preview, .thumbnail-placeholder {
   width: 100%;
-  aspect-ratio: 1 / 1; /* Square */
+  aspect-ratio: 1 / 1;
   object-fit: cover;
-  border-radius: 6px; /* Slightly rounder corners */
+  border-radius: 6px;
   border: 1px solid var(--border-color);
   background-color: #e9ecef;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden; /* Ensure image doesn't overflow */
+  overflow: hidden;
+  font-size: 0.9rem; /* Make "Empty" slightly larger */
+  font-weight: 500;
+  color: var(--text-color-light);
+  text-align: center;
+}
+/* Remove ::before rule */
+.thumbnail-placeholder::before {
+    content: ''; /* Clear content from pseudo-element */
 }
 
-.thumbnail-placeholder::before {
-    content: 'Empty';
-    font-size: 0.8rem;
-    color: var(--text-color-light);
-}
 
 .thumbnail-slot .button.retake-button {
-    font-size: 0.75rem;
-    padding: 4px 10px;
-    width: auto; /* Fit content */
-    min-width: 60px; /* Minimum width */
-    margin-top: 4px;
-     background-color: var(--error-color);
-     color: white;
-     /* Inherits base .button styles */
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  width: auto;
+  min-width: 60px;
+  margin-top: 4px;
+  background-color: var(--error-color); /* Red for retake */
+  color: white;
+  border: none;
+  line-height: 1.2;
 }
-
-.thumbnail-slot .button.tertiary-button {
-     background-color: #6c757d;
-     color: white;
-     /* Inherits base .button styles */
-}
-.thumbnail-slot .button.tertiary-button:hover:not(:disabled){
-    background-color: #5a6268;
+.thumbnail-slot .button.retake-button:hover:not(:disabled) {
+  background-color: #c82333; /* Darker red */
 }
 
 /* --- Modal Footer --- */
 .modal-footer {
     border-top: 1px solid var(--border-color);
     padding-top: 20px;
-    margin-top: 10px; /* Reduced margin */
+    margin-top: 10px;
     display: flex;
-    justify-content: flex-end; /* Align buttons to the right */
+    justify-content: flex-end; /* Align buttons to the right by default */
     gap: 15px;
-    flex-shrink: 0; /* Prevent footer from shrinking */
+    flex-shrink: 0;
 }
 .modal-footer .spinner {
     margin: 0 auto; /* Center spinner if it replaces buttons */
-    margin-bottom: 0; /* Override base spinner margin */
+    margin-bottom: 0;
 }
 
 /* Error text specific to modal */
-.modal-body .camera-error {
-    margin-top: 10px;
-    margin-bottom: 15px;
-    padding: 8px 12px;
-    font-size: 0.85rem;
-}
+.modal-body .camera-error,
 .modal-body .submit-error {
-   margin-top: 15px;
-   margin-bottom: 15px;
-   font-size: 0.9rem;
+  margin: 15px 0;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  background-color: rgba(220, 53, 69, 0.1);
+  border: 1px solid var(--error-color);
+  border-radius: 4px;
+  text-align: center;
 }
+
+/* --- Logout Confirmation Modal Specific Styles --- */
+.logout-confirm-modal-content {
+  max-width: 400px;
+  padding: 25px;
+  text-align: center;
+}
+
+.logout-confirm-header h2 {
+  font-size: 1.3rem;
+  width: 100%;
+  text-align: center;
+  margin-right: -30px; /* Offset close button space if present */
+}
+
+.logout-confirm-body p {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-bottom: 25px;
+}
+
+.logout-confirm-footer {
+  justify-content: center;
+  gap: 20px;
+}
+
+.logout-confirm-footer .logout-button {
+   margin-top: 0;
+}
+
+.logout-confirm-footer .button {
+    padding: 10px 25px;
+    min-width: 100px;
+}
+
+
+/* ======================================================== */
+/* --- START: My Borrows Page Styles --- */
+/* ======================================================== */
+
+.my-borrows-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--secondary-color);
+}
+
+/* Reuse home header style for consistency */
+.my-borrows-page .home-header {}
+.my-borrows-page .welcome-user {}
+.my-borrows-page .header-avatar, .my-borrows-page .header-avatar-placeholder {}
+.my-borrows-page .header-title {}
+.my-borrows-page .header-nav {}
+.my-borrows-page .header-nav-button {}
+.my-borrows-page .header-logout {}
+
+.my-borrows-content {
+  padding: 30px;
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1200px; /* Limit content width */
+  margin: 0 auto; /* Center content */
+}
+
+/* Reuse section title styling */
+.my-borrows-content .section-title {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 8px;
+    /* No other changes needed from base .section-title */
+}
+
+.borrowed-books-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust min width for slightly larger cards */
+  gap: 30px; /* Space between cards */
+  margin-top: 25px; /* Space below title */
+}
+
+/* Reuse card style with modifications */
+.borrowed-book-item.card {
+  display: flex;
+  gap: 20px; /* Space between image and info */
+  padding: 20px;
+  align-items: flex-start; /* Align items to the top */
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+.borrowed-book-item.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.borrowed-book-cover,
+.borrowed-book-cover-placeholder {
+  width: 100px; /* Fixed width */
+  height: 150px; /* Maintain aspect ratio */
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0; /* Prevent shrinking */
+  background-color: #e0e0e0; /* Placeholder background */
+}
+.borrowed-book-cover-placeholder {
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ font-size: 0.8rem;
+ color: var(--text-color-light);
+ text-align: center;
+}
+.borrowed-book-cover.image-error { /* Style if image fails */
+  object-fit: contain;
+  background-color: #eee;
+}
+
+.borrowed-book-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Pushes button down */
+  flex-grow: 1;
+  min-height: 150px; /* Match image height */
+}
+
+.borrowed-book-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+  line-height: 1.3;
+}
+.borrowed-book-info p {
+  font-size: 0.9rem;
+  color: var(--text-color-light);
+  margin: 0 0 8px 0;
+}
+.borrowed-book-info .due-date {
+  font-weight: 500;
+  color: var(--error-color);
+  margin-top: 10px; /* Add space above due date */
+  margin-bottom: 12px; /* Space below due date */
+  font-size: 0.95rem;
+}
+
+.return-button-small {
+ background-color: var(--success-color);
+ color: white;
+ padding: 7px 18px; /* Slightly larger padding */
+ font-size: 0.9rem;
+ align-self: flex-start; /* Align button left */
+ margin-top: auto; /* Push to bottom if flex container allows */
+}
+.return-button-small:hover:not(:disabled) {
+  background-color: #218838;
+}
+.return-button-small:disabled {
+  background-color: #ccc !important;
+  cursor: not-allowed;
+}
+
+/* Reuse home footer styling */
+.my-borrows-page .home-footer { }
 
 
 /* --- Spinner Animation --- */
@@ -969,7 +1194,7 @@ body {
   border-radius: 50%;
   border-left-color: var(--primary-color);
   animation: spin 1s ease infinite;
-  margin-bottom: 15px;
+  margin-bottom: 15px; /* Default margin */
 }
 /* Adjust spinner size when used inline in buttons */
 .button .spinner {
@@ -986,98 +1211,31 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* --- My Borrows Page Styles --- */
-.my-borrows-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--secondary-color);
+/* --- General Utility Classes --- */
+/* Add a class for visually disabled buttons that aren't actually disabled */
+.disabled-visual {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #ccc !important;
+  color: #777 !important;
+  border-color: #ccc !important;
+  transform: none !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
-.my-borrows-content {
-  padding: 30px;
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Add a class for styling images that failed to load */
+.image-error {
+  object-fit: contain; /* Or 'scale-down' */
+  background-color: #f0f0f0; /* Light background for failed images */
+  padding: 10px; /* Add some padding so text isn't right at edge */
 }
-
-.borrowed-books-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Wider cards for borrows */
-  gap: 30px;
-}
-
-.borrowed-book-item {
-  /* Reusing .card style for base */
-  display: flex; /* Layout items horizontally */
-  gap: 20px;
-  text-align: left;
-  padding: 20px; /* Adjust padding */
-  align-items: flex-start; /* Align items at the top */
-}
-
-.borrowed-book-cover,
-.borrowed-book-cover-placeholder {
-  width: 100px; /* Fixed width for cover */
-  height: 150px; /* Fixed height */
-  object-fit: cover;
-  border-radius: 4px;
-  flex-shrink: 0; /* Prevent image from shrinking */
-  background-color: #e0e0e0; /* Placeholder bg */
-}
-.borrowed-book-cover-placeholder {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-size: 0.8rem;
-   color: var(--text-color-light);
-}
-
-
-.borrowed-book-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  flex-grow: 1;
-  height: 100%; /* Try to fill height */
-}
-
-.borrowed-book-info h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 5px 0;
-}
-.borrowed-book-info p {
-  font-size: 0.9rem;
-  color: var(--text-color-light);
-  margin: 0 0 8px 0;
-}
-.borrowed-book-info .due-date {
-  font-weight: 500;
-  color: var(--error-color); /* Make due date stand out */
-  margin-top: auto; /* Push to bottom */
-  margin-bottom: 10px;
-}
-
-.return-button-small {
-   /* Inherits .button */
-   background-color: var(--success-color);
-   color: white;
-   padding: 6px 15px; /* Smaller padding */
-   font-size: 0.9rem;
-   align-self: flex-start; /* Align button left */
-}
-.return-button-small:hover:not(:disabled) {
-  background-color: #218838;
-}
-
 
 /* ======================================================== */
-/* --- Responsive Adjustments --- */
+/* --- Responsive Adjustments (Consolidated) --- */
 /* ======================================================== */
 
 @media (max-width: 900px) {
+  /* Book Detail */
   .book-detail-content-wrapper {
     grid-template-columns: 200px 1fr;
     gap: 30px;
@@ -1088,6 +1246,7 @@ body {
    .book-detail-info-container .book-detail-author {
         font-size: 1.2rem;
    }
+   /* My Borrows */
    .borrowed-books-list {
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
    }
@@ -1095,17 +1254,16 @@ body {
 
 
 @media (max-width: 768px) {
+   /* Book Detail */
   .book-detail-main-content {
      padding: 20px;
      margin: 15px;
      width: calc(100% - 30px);
   }
-
   .book-detail-content-wrapper {
     grid-template-columns: 1fr; /* Stack columns */
     gap: 30px;
   }
-
   .book-detail-cover-column {
     position: static; /* Unstick the column */
     max-height: none;
@@ -1113,23 +1271,26 @@ body {
     max-width: 280px;
     margin: 0 auto 20px auto;
   }
-
   .book-detail-cover-container {
      margin-bottom: 25px;
   }
-
   .book-detail-info-container {
       padding-top: 0;
       text-align: center;
   }
-
   .book-detail-info-container .book-detail-title {
       font-size: 1.8rem;
   }
   .book-detail-info-container .book-detail-author {
       font-size: 1.1rem;
-      margin-bottom: 20px;
+      margin-bottom: 5px; /* Tighter spacing */
   }
+  /* Book ID specific adjustments */
+   .book-detail-bookid {
+       margin-bottom: 20px;
+       text-align: center;
+   }
+
    .book-detail-meta {
        justify-content: center;
        padding-bottom: 15px;
@@ -1151,10 +1312,11 @@ body {
        font-size: 1rem;
        line-height: 1.7;
    }
+   /* My Borrows */
     .borrowed-books-list {
       grid-template-columns: 1fr; /* Stack borrowed books */
    }
-   .borrowed-book-item {
+   .borrowed-book-item.card {
        flex-direction: column; /* Stack image and info */
        align-items: center;
        text-align: center;
@@ -1162,12 +1324,15 @@ body {
    .borrowed-book-info {
        align-items: center;
        text-align: center;
+       min-height: auto; /* Reset min-height */
+       margin-top: 15px; /* Add space after image */
    }
     .borrowed-book-info .due-date {
       margin-top: 10px;
     }
     .return-button-small {
         align-self: center; /* Center button */
+        margin-top: 15px; /* Add space above button */
     }
 }
 
@@ -1194,13 +1359,64 @@ body {
    .modal-footer .button {
        width: 100%; /* Make buttons full width */
    }
+
+  /* Logout Modal specific */
+   .logout-confirm-modal-content {
+        max-width: 90%;
+        padding: 20px;
+    }
+     .logout-confirm-header h2 {
+        font-size: 1.2rem;
+        margin-right: 0; /* Adjust if close button overlaps */
+    }
+     .logout-confirm-body p {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    .logout-confirm-footer {
+        /* Keep buttons side-by-side unless very small screen */
+        /* Consider stacking if needed: */
+        /* flex-direction: column; */
+        /* gap: 10px; */
+    }
+     .logout-confirm-footer .button {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
 }
 
+/* Home page search responsiveness */
 @media (max-width: 600px) {
-    /* Adjust thumbnail grid for smaller screens if needed */
-    /* Keep the 2x2 grid from the 700px breakpoint or adjust further */
-    /* .image-thumbnails-grid { grid-template-columns: 1fr; } */ /* Example: stack */
+  .section-header-with-search {
+    flex-direction: column; /* Stack title and search */
+    align-items: flex-start; /* Align items left */
+    padding-bottom: 15px;
+  }
+  .search-container {
+     /* Make search container full width */
+     width: 100%;
+     justify-content: flex-start; /* Align items left */
+     margin-top: 10px; /* Add space between title and search */
+  }
+  .search-input {
+    min-width: 0; /* Remove min-width */
+    flex-grow: 1; /* Allow input to grow */
+  }
+  .search-submit-button, .clear-search-button {
+      padding: 10px 15px; /* Slightly smaller buttons */
+      font-size: 0.9rem;
+  }
+   .section-title {
+      width: 100%; /* Ensure title takes full width */
+      margin-bottom: 10px; /* Space below title when stacked */
+      font-size: 1.5rem;
+   }
+   .search-results-indicator {
+     text-align: center; /* Center on small screens */
+     margin-bottom: 15px;
+   }
 
+   /* Modal thumbnail responsiveness */
     .thumbnail-slot p {
       font-size: 0.7rem;
     }
@@ -1210,288 +1426,7 @@ body {
     }
 }
 
-.webcam-section { /* NEW Container for webcam + button below */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.webcam-container {
-  position: relative;
-  margin: 0 auto 15px auto; /* Center horizontally, space below */
-  max-width: 480px;
-  width: 100%;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  background-color: #f0f0f0;
-  aspect-ratio: 4 / 3; /* Or 16 / 9 if preferred */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.webcam-container video {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Capture button below webcam */
-.capture-main-button {
-  display: block; /* Make it block */
-  margin-top: 15px; /* Add space above */
-  padding: 10px 25px;
-  font-size: 1.1rem;
-  min-width: 180px; /* Ensure it has some minimum width */
-  /* Inherits .button .primary-button styles */
-}
-
-.thumbnail-instruction {
-  font-size: 0.9rem;
-  color: var(--text-color-light);
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* Thumbnail Grid within Modal */
-.image-thumbnails-grid {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* More flexible columns */
-gap: 15px;
-margin-top: 15px;
-margin-bottom: 25px;
-padding: 0 10px; /* Add some padding */
-}
-
-.thumbnail-slot {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 5px;
-position: relative; /* For potential overlays if needed */
-}
-.thumbnail-slot p {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--text-color);
-  margin-bottom: 3px;
-  white-space: nowrap;
-}
-
-.thumbnail-preview, .thumbnail-placeholder {
-width: 100%;
-aspect-ratio: 1 / 1; /* Keep square */
-object-fit: cover;
-border-radius: 6px;
-border: 1px solid var(--border-color);
-background-color: #e9ecef;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-font-size: 0.8rem; /* For placeholder text */
-color: var(--text-color-light); /* For placeholder text */
-}
-
-.thumbnail-slot .button.retake-button {
-  font-size: 0.75rem;
-  padding: 4px 10px;
-  width: auto;
-  min-width: 60px;
-  margin-top: 4px;
-  background-color: var(--error-color); /* Red for retake */
-  color: white;
-  border: none;
-  line-height: 1.2; /* Adjust line height */
-   /* Inherits base .button styles for transitions etc. */
-}
-.thumbnail-slot .button.retake-button:hover:not(:disabled) {
-  background-color: #c82333; /* Darker red */
-}
-
-/* Error text specific to modal */
-.modal-body .camera-error,
-.modal-body .submit-error {
-  margin: 15px 0; /* Consistent margin */
-  padding: 10px 15px;
-  font-size: 0.9rem;
-  background-color: rgba(220, 53, 69, 0.1);
-  border: 1px solid var(--error-color);
-  border-radius: 4px;
-  text-align: center;
-}
-
-/* --- My Borrows Page Styles --- */
-.my-borrows-page {
-display: flex;
-flex-direction: column;
-min-height: 100vh;
-background-color: var(--secondary-color);
-}
-
-/* Reuse home header style for consistency */
-.my-borrows-page .home-header { }
-.my-borrows-page .welcome-user { }
-.my-borrows-page .header-avatar, .my-borrows-page .header-avatar-placeholder { }
-.my-borrows-page .header-title { }
-.my-borrows-page .header-nav { }
-.my-borrows-page .header-nav-button { }
-.my-borrows-page .header-logout { }
-
-.my-borrows-content {
-padding: 30px;
-flex-grow: 1;
-width: 100%;
-max-width: 1200px; /* Limit content width */
-margin: 0 auto; /* Center content */
-}
-
-/* Reuse section title styling */
-.my-borrows-content .section-title { }
-
-.borrowed-books-list {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjust min width for slightly larger cards */
-gap: 30px; /* Space between cards */
-}
-
-/* Reuse card style with modifications */
-.borrowed-book-item.card {
-display: flex;
-gap: 20px; /* Space between image and info */
-padding: 20px;
-align-items: flex-start; /* Align items to the top */
-background-color: var(--card-bg);
-border-radius: var(--border-radius);
-box-shadow: var(--card-shadow);
-border: 1px solid var(--border-color);
-transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-}
-.borrowed-book-item.card:hover {
-transform: translateY(-3px);
-box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-}
-
-
-.borrowed-book-cover,
-.borrowed-book-cover-placeholder {
-width: 100px; /* Fixed width */
-height: 150px; /* Maintain aspect ratio */
-object-fit: cover;
-border-radius: 4px;
-flex-shrink: 0; /* Prevent shrinking */
-background-color: #e0e0e0; /* Placeholder background */
-}
-.borrowed-book-cover-placeholder {
- display: flex;
- align-items: center;
- justify-content: center;
- font-size: 0.8rem;
- color: var(--text-color-light);
- text-align: center;
-}
-.borrowed-book-cover.image-error { /* Style if image fails */
-  object-fit: contain;
-  background-color: #eee;
-}
-
-.borrowed-book-info {
-display: flex;
-flex-direction: column;
-justify-content: space-between; /* Pushes button down */
-flex-grow: 1;
-min-height: 150px; /* Match image height */
-}
-
-.borrowed-book-info h3 {
-font-size: 1.1rem;
-font-weight: 600;
-margin: 0 0 5px 0;
-line-height: 1.3;
-}
-.borrowed-book-info p {
-font-size: 0.9rem;
-color: var(--text-color-light);
-margin: 0 0 8px 0;
-}
-.borrowed-book-info .due-date {
-font-weight: 500;
-color: var(--error-color);
-margin-top: 10px; /* Add space above due date */
-margin-bottom: 12px; /* Space below due date */
-font-size: 0.95rem;
-}
-
-.return-button-small {
- /* Inherits base .button */
- background-color: var(--success-color);
- color: white;
- padding: 7px 18px; /* Slightly larger padding */
- font-size: 0.9rem;
- align-self: flex-start; /* Align button left */
- /* Override potential margins from base button if needed */
- margin-top: auto; /* Push to bottom if flex container allows */
-}
-.return-button-small:hover:not(:disabled) {
-background-color: #218838;
-}
-.return-button-small:disabled {
-  background-color: #ccc !important;
-  cursor: not-allowed;
-}
-
-
-/* Reuse home footer styling */
-.my-borrows-page .home-footer { }
-
-/* --- Responsive Adjustments for My Borrows --- */
-@media (max-width: 768px) {
-  .borrowed-books-list {
-    grid-template-columns: 1fr; /* Single column on smaller screens */
- }
- .borrowed-book-item.card {
-     flex-direction: column; /* Stack image and info */
-     align-items: center; /* Center items */
-     text-align: center;
- }
- .borrowed-book-info {
-     align-items: center;
-     text-align: center;
-     min-height: auto; /* Reset min-height */
-     margin-top: 15px; /* Add space after image */
- }
-  .borrowed-book-info .due-date {
-    margin-top: 10px;
-  }
-  .return-button-small {
-      align-self: center; /* Center button */
-      margin-top: 15px; /* Add space above button */
-  }
-}
-
-/* Add a class for visually disabled buttons that aren't actually disabled */
-.disabled-visual {
-opacity: 0.6;
-cursor: not-allowed;
-background: #ccc !important;
-color: #777 !important;
-border-color: #ccc !important;
-transform: none !important;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* Add a class for styling images that failed to load */
-.image-error {
-  object-fit: contain; /* Or 'scale-down' */
-  background-color: #f0f0f0; /* Light background for failed images */
-  padding: 10px; /* Add some padding so text isn't right at edge */
-}
-
-
-/* --- END --- */
 
 /* ======================================================== */
-/* --- END: Book Detail Page Styles & Modal --- */
+/* --- END OF FILE --- */
 /* ======================================================== */
