@@ -117,7 +117,7 @@ export default function Home({ user, onLogout }) {
             <div className="search-container">
                 <input
                     type="text"
-                    placeholder="Search by title, author, genre, or ID..." // Updated placeholder
+                    placeholder="Search by title, author, genre..." // Updated placeholder
                     className="search-input"
                     value={searchInput}
                     onChange={handleSearchInputChange}
