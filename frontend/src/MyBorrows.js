@@ -304,6 +304,11 @@ export default function MyBorrows({ user, onLogout }) {
             </header>
 
             <main className="my-borrows-content">
+            {user && user.isBlocked && (
+    <div className="error-text" style={{ backgroundColor: 'var(--error-bg)', padding: '10px', marginBottom: '15px', border: '1px solid var(--error-color)', borderRadius: 'var(--border-radius)'}}>
+        Your account is currently blocked from borrowing new books due to overdue items or administrative action. Please return any overdue books or contact support.
+    </div>
+)}
                 <h2 className="section-title">Currently Borrowed Books ({borrowedRecords.length}/{MAX_BORROW_LIMIT})</h2>
 
                 {/* Loading/Error/Empty State for Active Borrows */}

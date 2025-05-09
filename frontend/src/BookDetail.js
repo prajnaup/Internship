@@ -239,6 +239,9 @@ export default function BookDetail({ user, onLogout }) {
         if (borrowStatus === 'limitReached') {
             return <button className="button action-button primary disabled-visual" disabled title={`Borrow limit of ${MAX_BORROW_LIMIT} reached.`}>Borrow Limit Reached ({borrowCount}/{MAX_BORROW_LIMIT})</button>;
         }
+        if (borrowStatus === 'userBlocked') {
+            return <button className="button action-button primary disabled-visual" disabled title="Your account is blocked from borrowing.">Account Blocked</button>;
+        }
         // Default is 'canBorrow'
         return <button onClick={() => openModal('borrow')} className="button action-button primary borrow-button">Borrow Book</button>;
     };

@@ -1699,6 +1699,47 @@ body {
     }
 }
 
+/* ... existing styles.css ... */
+
+/* App-level Flash Message */
+.app-flash-message {
+  padding: 15px 25px;
+  margin: 0; /* No margin for app root message */
+  text-align: center;
+  color: #fff;
+  font-weight: 500;
+  position: fixed; /* Or sticky */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2000; /* Above other content */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.app-flash-message.info { background-color: #3498db; }
+.app-flash-message.success { background-color: var(--success-color); }
+.app-flash-message.error { background-color: var(--error-color); }
+
+.app-flash-message button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-left: 20px;
+  opacity: 0.8;
+  padding: 0 10px;
+  line-height: 1;
+}
+.app-flash-message button:hover {
+  opacity: 1;
+}
+
+/* Ensure admin layout styles don't conflict if it also has flash messages */
+/* ... rest of styles.css ... */
+
 
 /* ======================================================== */
 /* --- END OF FILE --- */
